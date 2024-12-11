@@ -1,0 +1,21 @@
+{
+  "name": "exchange-ts-sdk",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/ws": "^8.5.12"
+  },
+  "dependencies": {
+    "@iota/iota-sdk": "^0.3.1",
+    "axios": "^1.7.7",
+    "bech32": "^2.0.0",
+    "ed25519": "link:@iota/iota-sdk/keypairs/ed25519",
+    "ws": "^8.18.0"
+  }
+}

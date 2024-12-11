@@ -1,0 +1,17 @@
+iota client call \
+--package "0xee608144a1fe5d02397a7ded7d67d7fba11e193e0db3d83c3586a17a4fe74652" \
+--module coffee \
+--function buy_coffee \
+--args "0x4a94ff8949520af278796a25cbaafe77eeadad59e4d327f2b9aa159a77e3bb04" "0x0028aaff0a4a3cf1f0eccc7140d568d9939c80f8c69e9211cdc52ac4f7bdb7df"
+
+iota client call \
+--package "0xee608144a1fe5d02397a7ded7d67d7fba11e193e0db3d83c3586a17a4fe74652" \
+--module coffee \
+--function transfer \
+--args "0x4a94ff8949520af278796a25cbaafe77eeadad59e4d327f2b9aa159a77e3bb04" "0x5db7b5ad4cda87fbfb18b0605a86eb0efe6c55c60540a519c6ae22560cb2fded" "0x111111111504e9350e635d65cd38ccd2c029434c6a3a480d8947a9ba6a15b215"
+
+iota client call \
+--package "0xee608144a1fe5d02397a7ded7d67d7fba11e193e0db3d83c3586a17a4fe74652" \
+--module coffee \
+--function collect_profits \
+--args "0x4a94ff8949520af278796a25cbaafe77eeadad59e4d327f2b9aa159a77e3bb04"

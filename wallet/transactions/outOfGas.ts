@@ -1,0 +1,33 @@
+import { IotaClient } from '@iota/iota-sdk/client';
+import { Ed25519Keypair } from '@iota/iota-sdk/keypairs/ed25519';
+import { TransactionBlock } from '@iota/iota-sdk/transactions';
+
+const client = new IotaClient({
+    url: 'https://api.iota-rebased-alphanet.iota.cafe',
+});
+
+const testMnemonic = 'remove vessel lens oak junk view cancel say fatal hotel swamp cool true mean basic year shoe chat obey ozone hand blade toe good'
+const keypair = Ed25519Keypair.deriveKeypair(testMnemonic, `m/44'/4218'/0'/0'/0'`);
+const address = keypair.getPublicKey().toIotaAddress();
+console.log("Sender address: " + address)
+
+const transfers = [
+    { address: '0x9938c94f4118153bbed08f14ae74e2557172542f59bf0b7a306e99d5a0b0896e', amount: 1_000_000 }];
+
+const txb = new TransactionBlock();
+txb.pure("some data", "string");
+// first, split the gas coin into multiple coins
+// const coins = txb.splitCoins(
+//     txb.gas,
+//     transfers.map((transfer) => transfer.amount),
+// );
+
+// // next, create a transfer transaction for each coin
+// transfers.forEach((transfer, index) => {
+//     txb.transferObjects([coins[index]], transfer.address);
+// });
+
+client.signAndExecuteTransactionBlock({ signer: keypair, transactionBlock: txb }).then(txResponse => {
+    console.log(txResponse)
+    console.log("https://explorer.iota.cafe/txblock/" + txResponse.digest)
+})

@@ -1,0 +1,61 @@
+# merge coins, need 2 SUI
+sui client merge-coin --primary-coin 0xe48ee180fe6bee05e68d4054bd767466d68032f3d01b069e87d84bb89e635bbc --coin-to-merge 0xef967cd0b06f8e024568dfb2852669bba9ae233eef339caed5d44a5b4f55dc22 --gas-budget 10000000
+# provide the 2 Sui coin object id where 0xe48ee180fe6bee05e68d4054bd767466d68032f3d01b069e87d84bb89e635bbc is now
+sui client ptb \
+--move-call sui::tx_context::sender \
+--assign sender \
+--move-call 0x4255184a0143c0ce4394a3f16a6f5aa5d64507269e54e51ea396d569fe8f1ba5::register::register @0x300369e8909b9a6464da265b9a5a9ab6fe2158a040e84e808628cde7a07ee5a3 '"thoralf.sui"' 1 @0xe48ee180fe6bee05e68d4054bd767466d68032f3d01b069e87d84bb89e635bbc @0x6 \
+--assign res \
+--move-call 0x6ed81fd808a23eae2da488052334d50478b36527474fc99707c1aed0e43104b1::direct_setup::set_target_address @0x300369e8909b9a6464da265b9a5a9ab6fe2158a040e84e808628cde7a07ee5a3 res.0 @0x13259712d88c8b9b5d1c1cef3e19c72abd84d26b872b92dbbab3798b325b0a71 @0x6 \
+--transfer-objects "[res]" sender \
+--gas-budget 50000000
+
+# set set_reverse_lookup
+sui client ptb \
+--move-call 0x6ed81fd808a23eae2da488052334d50478b36527474fc99707c1aed0e43104b1::direct_setup::set_reverse_lookup @0x300369e8909b9a6464da265b9a5a9ab6fe2158a040e84e808628cde7a07ee5a3 '"thoralf.sui"' \
+--gas-budget 50000000
+
+# set set_data 
+sui client ptb \
+--move-call 0x6ed81fd808a23eae2da488052334d50478b36527474fc99707c1aed0e43104b1::direct_setup::set_user_data @0x300369e8909b9a6464da265b9a5a9ab6fe2158a040e84e808628cde7a07ee5a3 @0x1a593c66b93e01fa74e88d53e4d0fea49e0c27f5b948ba71f17782b304129ec0 '"my_key"' '"my_value"' @0x6 \
+--gas-budget 50000000
+
+
+# set all data
+sui client ptb \
+--make-move-vec "<std::string::String>" "['key1', 'key2']" \
+--assign keys \
+--make-move-vec "<std::string::String>" "['value1', 'value2']" \
+--assign values \
+--move-call 0x2::vec_map::from_keys_values "<std::string::String,std::string::String>" keys values \
+--assign data_vec_map \
+--move-call 0x22fa05f21b1ad71442491220bb9338f7b7095fe35000ef88d5400d28523bdd93::domain::new '"thoralf.sui"' \
+--assign domain \
+--move-call sui::dynamic_field::borrow_mut @0x300369e8909b9a6464da265b9a5a9ab6fe2158a040e84e808628cde7a07ee5a3  \
+--assign registry \
+--move-call 0x22fa05f21b1ad71442491220bb9338f7b7095fe35000ef88d5400d28523bdd93::registry::set_data registry domain data_vec_map \
+--gas-budget 50000000
+
+sui client ptb \
+--make-move-vec "<vector<std::string::String>>" "['key1', 'key2']" \
+--assign keys \
+--make-move-vec "<vector<std::string::String>>" "['value1', 'value2']" \
+--assign values \
+--move-call 0x2::vec_map::from_keys_values "<vector<std::string::String>,vector<std::string::String>>" keys values \
+--assign data_vec_map \
+--move-call 0x2::vec_map::pop "<vector<std::string::String>,vector<std::string::String>>" data_vec_map \
+--move-call 0x2::vec_map::pop "<vector<std::string::String>,vector<std::string::String>>" data_vec_map \
+--move-call 0x2::vec_map::destroy_empty "<vector<std::string::String>,vector<std::string::String>>" data_vec_map
+
+
+
+
+# make vec_map and destroy it
+sui client ptb \
+--make-move-vec "<std::string::String>" "['key1', 'key2']" \
+--assign keys \
+--make-move-vec "<std::string::String>" "['value1', 'value2']" \
+--assign values \
+--move-call 0x2::vec_map::empty "<vector<std::string::String>,vector<std::string::String>>" \
+--assign vmap \
+--move-call 0x2::vec_map::destroy_empty "<vector<std::string::String>,vector<std::string::String>>" vmap

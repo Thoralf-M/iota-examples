@@ -1,0 +1,12 @@
+curl https://api.testnet.iota.cafe \
+--header 'content-type: application/json' \
+--data '{
+    "jsonrpc": "2.0",
+    "id": 1,
+    "method": "iota_getObject",
+    "params": {
+        "object_id": "0x0067d0773a7f7f94c5deb2e6f20d99636026357272beee3f2c1528abe3c40dd7",
+        "options": { 
+        }
+    }
+}'

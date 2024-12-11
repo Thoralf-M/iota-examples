@@ -1,0 +1,19 @@
+curl https://api.testnet.iota.cafe \
+--header 'content-type: application/json' \
+--data '{
+    "jsonrpc": "2.0",
+    "id": 1,
+    "method": "iota_tryGetPastObject",
+    "params": {
+        "object_id": "0x00712b515bfa6a35cde340caac884b8a1dff5c2d965ea855b516f8be20946b60",
+        "version": 473634,
+        "options": { 
+            "showContent": true,
+            "showDisplay": true,
+            "showOwner": true,
+            "showPreviousTransaction": true,
+            "showStorageRebate": true,
+            "showType": true
+        }
+    }
+}'

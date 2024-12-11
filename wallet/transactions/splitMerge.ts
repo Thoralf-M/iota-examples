@@ -1,0 +1,31 @@
+import { IotaClient } from '@iota/iota-sdk/client';
+import { Ed25519Keypair } from '@iota/iota-sdk/keypairs/ed25519';
+import { Transaction } from '@iota/iota-sdk/transactions';
+
+const client = new IotaClient({
+    url: 'https://api.iota-rebased-alphanet.iota.cafe',
+});
+
+const testMnemonic = 'remove vessel lens oak junk view cancel say fatal hotel swamp cool true mean basic year shoe chat obey ozone hand blade toe good'
+const keypair = Ed25519Keypair.deriveKeypair(testMnemonic, `m/44'/4218'/0'/0'/0'`);
+const address = keypair.getPublicKey().toIotaAddress();
+console.log("Sender address: " + address)
+
+const tx = new Transaction();
+
+const splitAmounts = [1, 2, 3]
+const coins = tx.splitCoins(
+    tx.gas,
+    splitAmounts,
+);
+let coinArgs = [...Array(splitAmounts.length).keys()].map((i) => {
+    return { kind: 'NestedResult', NestedResult: [coins[0].NestedResult[0], i] }
+})
+// @ts-ignore
+tx.mergeCoins(tx.gas, coinArgs);
+
+(async () => {
+    const txResponse = await client.signAndExecuteTransaction({ signer: keypair, transaction: tx });
+    console.log(txResponse)
+    console.log("https://explorer.iota.cafe/txblock/" + txResponse.digest)
+})()

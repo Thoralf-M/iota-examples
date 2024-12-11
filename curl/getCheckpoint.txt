@@ -1,0 +1,10 @@
+curl http://localhost:9000 \
+--header 'content-type: application/json' \
+--data '{
+    "jsonrpc": "2.0",
+    "id": 1,
+    "method": "iota_getCheckpoint",
+    "params": {
+        "id": "0"
+    }
+}'

@@ -1,0 +1,19 @@
+curl http://localhost:9000 \
+--header 'content-type: application/json' \
+--data '{
+    "jsonrpc": "2.0",
+    "id": 1,
+    "method": "iota_getTransactionBlock",
+    "params": {
+        "digest": "9JJgKZLdeNUP9sJkPkWrZf6XChtDYWag5qkCsUyqyunX",
+        "options": { 
+            "showInput": false,
+            "showRawInput": true,
+            "showEffects": false,
+            "showEvents": false,
+            "showObjectChanges": false,
+            "showBalanceChanges": false,
+            "showRawEffects": false
+        }
+    }
+}'
