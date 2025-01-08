@@ -1,0 +1,67 @@
+# get events for a validator
+VALIDATOR_IOTA_ADDRESS=0x6d6416b3d8978e8821d875ec703daeefe0a2177037b0350bb2f760a426dcae03
+curl https://api.testnet.iota.cafe  \
+--header 'content-type: application/json' \
+--data '{
+    "jsonrpc": "2.0",
+    "id": 1,
+    "method": "iotax_queryEvents",
+    "params": {
+        "query":  { "MoveEventType": "0x3::validator_set::ValidatorEpochInfoEventV1" }
+    }
+}'  | jq "[.result.data[] | select(.parsedJson.validator_address == \"$VALIDATOR_IOTA_ADDRESS\")] | max_by(.timestampMs | tonumber)"
+
+
+# get with pagination
+VALIDATOR_IOTA_ADDRESS="0x1b635e4664c54fc30fff4f13d8eb82af7466a056280f640404183c163d4beabd"
+URL="https://api.testnet.iota.cafe"
+METHOD="iotax_queryEvents"
+QUERY='{
+    "MoveEventType": "0x3::validator_set::ValidatorEpochInfoEventV1"
+}'
+
+# Function to make the request
+make_request() {
+    curl -s $URL \
+        --header 'content-type: application/json' \
+        --data "{
+            \"jsonrpc\": \"2.0\",\"id\": 1,\"method\": \"$METHOD\",\"params\": {\"query\": $QUERY}
+        }"
+}
+
+# First request to get the initial response
+response=$(make_request)
+
+# Process response to find latest epoch and filter by validator address
+latest_epoch=0
+latest_event=""
+
+while true; do
+    hasNextPage=$(echo "$response" | jq -r '.result.hasNextPage')
+    nextCursor=$(echo "$response" | jq -r '.result.nextCursor')
+
+    # Filter events for the specific validator and find the latest epoch
+    events=$(echo "$response" | jq -c ".result.data[] | select(.parsedJson.validator_address == \"$VALIDATOR_IOTA_ADDRESS\")")
+    echo "$events" | while read -r event; do
+        epoch=$(echo "$event" | jq -r '.parsedJson.epoch')
+        if [ "$epoch" -gt "$latest_epoch" ]; then
+            latest_epoch=$epoch
+            latest_event=$event
+        fi
+    done
+
+    # If there's no next page, break the loop
+    if [ "$hasNextPage" != "true" ]; then
+        break
+    fi
+
+    # Update the request with the next cursor
+    response=$(curl -s $URL \
+        --header 'content-type: application/json' \
+        --data "{
+            \"jsonrpc\": \"2.0\",\"id\": 1,\"method\": \"$METHOD\",\"params\": {\"query\": $QUERY,\"cursor\": $nextCursor}
+        }")
+
+done
+
+echo "$latest_event" | jq '.'
