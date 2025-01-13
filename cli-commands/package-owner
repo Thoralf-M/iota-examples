@@ -1,0 +1,4 @@
+PACKAGE_ID=0x974d61b4e495aa6b464759cbb9e1acea321246151d5db9afd3aacd1d8cda03dc
+PACKAGE_PUBLISH_TX=$(iota client object $PACKAGE_ID --json |  jq -r .previousTransaction)
+PACKAGE_PUBLISHER=$(iota client tx-block $PACKAGE_PUBLISH_TX --json |  jq -r .transaction.data.sender)
+echo $PACKAGE_PUBLISHER
