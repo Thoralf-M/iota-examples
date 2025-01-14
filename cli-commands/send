@@ -1,0 +1,17 @@
+ADDRESS=$(iota client active-address)
+iota client ptb \
+--assign to_address @$ADDRESS \
+--split-coins gas "[1000000000]" \
+--assign coin \
+--transfer-objects "[coin]" to_address \
+--gas-budget 50000000 \
+--dry-run
+
+ADDRESS=$(iota client active-address)
+iota client ptb \
+--assign to_address @$ADDRESS \
+--split-coins gas "[1000000000]" \
+--assign coin \
+--transfer-objects "[coin]" to_address \
+--gas-budget 50000000 \
+--dev-inspect
