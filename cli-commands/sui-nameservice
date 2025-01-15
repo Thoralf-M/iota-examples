@@ -68,8 +68,6 @@ for byte in "${bytes[@]}"; do
 done
 echo -e "$name"
 
-
-
 # set all data
 sui client ptb \
 --make-move-vec "<std::string::String>" "['key1', 'key2']" \
@@ -84,27 +82,3 @@ sui client ptb \
 --assign registry \
 --move-call 0x22fa05f21b1ad71442491220bb9338f7b7095fe35000ef88d5400d28523bdd93::registry::set_data registry domain data_vec_map \
 --gas-budget 50000000
-
-sui client ptb \
---make-move-vec "<vector<std::string::String>>" "['key1', 'key2']" \
---assign keys \
---make-move-vec "<vector<std::string::String>>" "['value1', 'value2']" \
---assign values \
---move-call 0x2::vec_map::from_keys_values "<vector<std::string::String>,vector<std::string::String>>" keys values \
---assign data_vec_map \
---move-call 0x2::vec_map::pop "<vector<std::string::String>,vector<std::string::String>>" data_vec_map \
---move-call 0x2::vec_map::pop "<vector<std::string::String>,vector<std::string::String>>" data_vec_map \
---move-call 0x2::vec_map::destroy_empty "<vector<std::string::String>,vector<std::string::String>>" data_vec_map
-
-
-
-
-# make vec_map and destroy it
-sui client ptb \
---make-move-vec "<std::string::String>" "['key1', 'key2']" \
---assign keys \
---make-move-vec "<std::string::String>" "['value1', 'value2']" \
---assign values \
---move-call 0x2::vec_map::empty "<vector<std::string::String>,vector<std::string::String>>" \
---assign vmap \
---move-call 0x2::vec_map::destroy_empty "<vector<std::string::String>,vector<std::string::String>>" vmap

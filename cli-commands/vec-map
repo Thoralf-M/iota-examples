@@ -1,0 +1,13 @@
+iota client ptb \
+--make-move-vec "<std::string::String>" "['key1', 'key2']" \
+--assign keys \
+--make-move-vec "<std::string::String>" "['value1', 'value2']" \
+--assign values \
+--move-call 0x2::vec_map::from_keys_values "<std::string::String,std::string::String>" keys values \
+--assign data_vec_map \
+--move-call 0x2::vec_map::insert "<std::string::String,std::string::String>" data_vec_map '"key3"' '"value3"' \
+--move-call 0x2::vec_map::pop "<std::string::String,std::string::String>" data_vec_map \
+--move-call 0x2::vec_map::pop "<std::string::String,std::string::String>" data_vec_map \
+--move-call 0x2::vec_map::pop "<std::string::String,std::string::String>" data_vec_map \
+--move-call 0x2::vec_map::destroy_empty "<std::string::String,std::string::String>" data_vec_map \
+--dry-run
