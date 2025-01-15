@@ -59,7 +59,7 @@ console.log("senderAddress: " + senderAddress);
         options: { showEffects: true },
     });
     console.log(txResponse)
-    console.log("https://explorer.iota.cafe/txblock/" + txResponse.digest)
+    console.log("https://explorer.rebased.iota.org/txblock/" + txResponse.digest)
 })()
 
 

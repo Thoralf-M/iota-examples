@@ -65,7 +65,7 @@ const GAS_POOL_BEARER_TOKEN = 'GAS_STATION_AUTH';
 
     const transactionEffects = await sponsorSignAndSubmit(reservedSponsorGasData.reservation_id, transaction, senderSignature)
     console.log(transactionEffects)
-    console.log("https://explorer.iota.cafe/txblock/" + transactionEffects.transactionDigest + '?network=http%3A%2F%2F127.0.0.1%3A9000')
+    console.log("https://explorer.rebased.iota.org/txblock/" + transactionEffects.transactionDigest + '?network=http%3A%2F%2F127.0.0.1%3A9000')
 })()
 
 interface ReserveGasResult {

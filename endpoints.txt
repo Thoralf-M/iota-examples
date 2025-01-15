@@ -1,7 +1,7 @@
 Indexer JSON RPC URL: https://api.iota-rebased-alphanet.iota.cafe
 Node JSON RPC: https://api.iota-rebased-alphanet.iota.cafe
 Faucet URL: https://faucet.iota-rebased-alphanet.iota.cafe/gas
-Explorer: https://explorer.iota.cafe/?network=alphanet
+Explorer: https://explorer.rebased.iota.org/?network=alphanet
 GraphQL: https://graphql.iota-rebased-alphanet.iota.cafe
 
 Fullnode: http://127.0.0.1:9000

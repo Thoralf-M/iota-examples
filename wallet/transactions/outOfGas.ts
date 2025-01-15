@@ -29,5 +29,5 @@ txb.pure("some data", "string");
 
 client.signAndExecuteTransactionBlock({ signer: keypair, transactionBlock: txb }).then(txResponse => {
     console.log(txResponse)
-    console.log("https://explorer.iota.cafe/txblock/" + txResponse.digest)
+    console.log("https://explorer.rebased.iota.org/txblock/" + txResponse.digest)
 })

@@ -39,7 +39,7 @@ console.log("Sender address: " + address);
 
     const txResponse = await client.signAndExecuteTransaction({ signer: keypair, transaction: tx });
     console.log(txResponse)
-    console.log("https://explorer.iota.cafe/txblock/" + txResponse.digest)
+    console.log("https://explorer.rebased.iota.org/txblock/" + txResponse.digest)
 })()
 
 

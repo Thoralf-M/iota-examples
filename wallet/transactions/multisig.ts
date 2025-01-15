@@ -74,7 +74,7 @@ console.log("multisigAddress: " + multisigAddress);
         options: { showEffects: true },
     });
     console.log(txResponse)
-    console.log("https://explorer.iota.cafe/txblock/" + txResponse.digest)
+    console.log("https://explorer.rebased.iota.org/txblock/" + txResponse.digest)
 })()
 
 async function requestFundsIfNeeded(client: IotaClient, address: string) {
