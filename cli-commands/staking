@@ -1,0 +1,16 @@
+iota client ptb \
+--assign validator_address @0x111111111504e9350e635d65cd38ccd2c029434c6a3a480d8947a9ba6a15b215 \
+--assign stake_amount 1000000000 \
+--split-coins gas "[stake_amount]" \
+--assign coin \
+--move-call 0x3::iota_system::request_add_stake @0x5 coin validator_address \
+--gas-budget 50000000
+
+# Partially withdraw stake
+iota client ptb \
+--assign staked_iota @0x08dff8b855cc48c5f4e1911a4b20d4d3805d12443fc824bc263172f0ce68aaaa \
+--assign amount_to_withdraw 1000000000 \
+--move-call 0x3::staking_pool::split staked_iota amount_to_withdraw \
+--assign split_staked_iota \
+--move-call 0x3::iota_system::request_withdraw_stake @0x5 split_staked_iota \
+--gas-budget 100000000
