@@ -1,0 +1,20 @@
+{
+  address(address: "0x111111111504e9350e635d65cd38ccd2c029434c6a3a480d8947a9ba6a15b215") {
+    objects(first: 2) {
+      edges {
+        node {
+          contents {
+            json
+          }
+        }
+      }
+    }
+  }
+}
+
+curl -i -X POST https://graphql.testnet.iota.cafe \
+     --header 'x-iota-rpc-show-usage: true' \
+     --header 'Content-Type: application/json' \
+     --data '{
+        "query": "query { address(address: \"0x111111111504e9350e635d65cd38ccd2c029434c6a3a480d8947a9ba6a15b215\") { objects(first: 2) { edges { node { contents { json } } } } } }"
+      }'

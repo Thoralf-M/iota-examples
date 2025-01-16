@@ -1,0 +1,16 @@
+query Func {
+    object(address: "0x7c98da4057f4cc17e52acdd3ec49c4fee25692f4d61aad29a9348d1c46fa67db") {
+        asMoveObject {
+          contents{
+            json
+          }
+        }
+    }
+}
+
+curl -i -X POST https://graphql.testnet.iota.cafe \
+     --header 'x-iota-rpc-show-usage: true' \
+     --header 'Content-Type: application/json' \
+     --data '{
+        "query": "query Func { object(address: \"0x7c98da4057f4cc17e52acdd3ec49c4fee25692f4d61aad29a9348d1c46fa67db\") { asMoveObject { contents { json } } } }"
+      }'

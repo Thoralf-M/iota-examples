@@ -1,0 +1,31 @@
+{
+  owner(
+    address: "0xc38109fc1c18e5acf987e46a4d98513c1ea598c71063d08d820b9d0119441937"
+  ) {
+    dynamicFields {
+      nodes {
+        name {
+          ...Value
+        }
+        value {
+          __typename
+          ... on MoveValue {
+            ...Value
+          }
+          ... on MoveObject {
+            contents {
+              ...Value
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+fragment Value on MoveValue {
+  type {
+    repr
+  }
+  json
+}
