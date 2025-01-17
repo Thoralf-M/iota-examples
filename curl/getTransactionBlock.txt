@@ -1,11 +1,11 @@
-curl http://localhost:9000 \
+curl https://api.testnet.iota.cafe \
 --header 'content-type: application/json' \
 --data '{
     "jsonrpc": "2.0",
     "id": 1,
     "method": "iota_getTransactionBlock",
     "params": {
-        "digest": "9JJgKZLdeNUP9sJkPkWrZf6XChtDYWag5qkCsUyqyunX",
+        "digest": "5Xvj4yW4SaRWtoWjH1BSXqAMmFsT9sNCiFvaDMfY8BYB",
         "options": { 
             "showInput": false,
             "showRawInput": true,

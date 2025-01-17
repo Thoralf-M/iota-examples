@@ -15,3 +15,9 @@ const parsed = decodeIotaPrivateKey("iotaprivkey1qrskdrlmprcf8fj2l4s9dgcpp5yuqy0
 const keypairPrivKey = Ed25519Keypair.fromSecretKey(parsed.secretKey);
 const add = keypairPrivKey.getPublicKey().toIotaAddress();
 console.log(add)
+
+
+// import { Secp256k1Keypair } from '@iota/iota-sdk/keypairs/secp256k1';
+// const keypair = Secp256k1Keypair.generate();
+// const address = keypair.getPublicKey().toIotaAddress();
+// console.log(address)
