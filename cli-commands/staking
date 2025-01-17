@@ -6,7 +6,7 @@ iota client ptb \
 --move-call 0x3::iota_system::request_add_stake @0x5 coin validator_address \
 --gas-budget 50000000
 
-# Partially withdraw stake
+# Partially withdraw staked IOTAs (potential rewards are also split and withdrawn additionally to the provided amount):
 iota client ptb \
 --assign staked_iota @0x08dff8b855cc48c5f4e1911a4b20d4d3805d12443fc824bc263172f0ce68aaaa \
 --assign amount_to_withdraw 1000000000 \
