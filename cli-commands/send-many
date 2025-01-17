@@ -1,0 +1,16 @@
+#!/bin/bash
+COIN_TRANSFERS='{
+  "0x111111111504e9350e635d65cd38ccd2c029434c6a3a480d8947a9ba6a15b215": 1000,
+  "0xfffff99ac1a34ac3d005780fb7728969e1f1a166c947fe7c5dc4fad060ba35ff": 2000
+}'
+ADDRESSES=($(echo "$COIN_TRANSFERS" | jq -r 'keys[]'))
+AMOUNTS=($(echo "$COIN_TRANSFERS" | jq -r 'to_entries | map(.value) | join(",")'))
+cmd="iota client ptb \
+--split-coins gas [${AMOUNTS[*]}] \
+--assign coins"
+for i in "${!ADDRESSES[@]}"; do
+  cmd+=" --transfer-objects [coins.$i] @${ADDRESSES[$i]}"
+done
+cmd+="--gas-budget 10000000 \
+--dry-run"
+$cmd
