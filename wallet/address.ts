@@ -16,8 +16,19 @@ const keypairPrivKey = Ed25519Keypair.fromSecretKey(parsed.secretKey);
 const add = keypairPrivKey.getPublicKey().toIotaAddress();
 console.log(add)
 
+import { fromHEX } from '@iota/bcs';
+const kp_import_0 = Ed25519Keypair.fromSecretKey(
+    fromHEX('0xd463e11c7915945e86ac2b72d88b8190cfad8ff7b48e7eb892c275a5cf0a3e82'),
+);
 
 // import { Secp256k1Keypair } from '@iota/iota-sdk/keypairs/secp256k1';
 // const keypair = Secp256k1Keypair.generate();
 // const address = keypair.getPublicKey().toIotaAddress();
 // console.log(address)
+
+// import { decodeIotaPrivateKey } from '@iota/iota-sdk/cryptography';
+// import { Secp256k1Keypair } from '@iota/iota-sdk/keypairs/secp256k1';
+// const decoded = decodeIotaPrivateKey("iotaprivkey1qx6le8m2h7f7ytr0ttppc4l84dalka3xux9sqdpctfu8ugarv7k9zmxfulg");
+// const keypair1 = Secp256k1Keypair.fromSecretKey(decoded.secretKey);
+// const address1 = keypair1.getPublicKey().toIotaAddress()
+// console.log(address1);

@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@iota/bcs':
+        specifier: ^0.2.1
+        version: 0.2.1
       '@iota/iota-sdk':
         specifier: ^0.3.1
         version: 0.3.1(typescript@5.7.2)
