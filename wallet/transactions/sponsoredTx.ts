@@ -1,25 +1,25 @@
 import { IotaClient, IotaObjectRef } from '@iota/iota-sdk/client';
 import { Ed25519Keypair } from '@iota/iota-sdk/keypairs/ed25519';
 import { Transaction } from '@iota/iota-sdk/transactions';
-import { requestIotaFromFaucetV0 } from '@iota/iota-sdk/faucet';
-import { fromB64 } from '../../../iota/sdk/bcs/dist/cjs';
+import { requestIotaFromFaucetV1 } from '@iota/iota-sdk/faucet';
+import { fromB64 } from '@iota/bcs';
 
 const testMnemonic = 'remove vessel lens oak junk view cancel say fatal hotel swamp cool true mean basic year shoe chat obey ozone hand blade toe good'
 
+const faucetUrl = 'https://faucet.testnet.iota.cafe';
+const nodeUrl = 'https://api.testnet.iota.cafe';
+const explorerTxBlockUrl = "https://explorer.rebased.iota.org/txblock/";
 const senderKeypair = Ed25519Keypair.deriveKeypair(testMnemonic, `m/44'/4218'/0'/0'/1'`);
 const senderAddress = senderKeypair.getPublicKey().toIotaAddress();
 console.log("senderAddress: " + senderAddress);
 
 
 (async () => {
-    /// Request funds from faucet if needed
     const client = new IotaClient({
-        url: 'http://127.0.0.1:9000',
-        // url: 'https://api.hackanet.iota.cafe',
+        url: nodeUrl,
     });
     await requestFundsIfNeeded(client, senderAddress)
 
-    const txb = new Transaction();
 
     const senderCoins = await client.getCoins({ owner: senderAddress, limit: 10 });
     let inputCoins: IotaObjectRef[] = [];
@@ -38,6 +38,7 @@ console.log("senderAddress: " + senderAddress);
         { address: '0x111111111504e9350e635d65cd38ccd2c029434c6a3a480d8947a9ba6a15b215', amount: 1_000_000 },
         { address: '0xa1a97d20bbad79e2ac89f215a3b3c4f2ff9a1aa3cc26e529bde6e7bc5500d610', amount: 1_000_000 },
     ];
+    const txb = new Transaction();
     const coins = txb.splitCoins(
         txb.objectRef(inputCoins[0]),
         transfers.map((transfer) => transfer.amount),
@@ -59,7 +60,7 @@ console.log("senderAddress: " + senderAddress);
         options: { showEffects: true },
     });
     console.log(txResponse)
-    console.log("https://explorer.rebased.iota.org/txblock/" + txResponse.digest)
+    console.log(explorerTxBlockUrl + txResponse.digest)
 })()
 
 
@@ -97,9 +98,8 @@ async function requestFundsIfNeeded(client: IotaClient, address: string) {
         owner: address,
     });
     if (parseInt(coinBalance.totalBalance) < 2_500_000) {
-        const faucetResponse = await requestIotaFromFaucetV0({
-            host: 'http://127.0.0.1:9123/gas',
-            // host: 'https://faucet.hackanet.iota.cafe/gas',
+        const faucetResponse = await requestIotaFromFaucetV1({
+            host: faucetUrl,
             recipient: address,
         });
         console.log(faucetResponse)
