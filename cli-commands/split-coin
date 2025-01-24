@@ -1,0 +1,2 @@
+coinObjectId=$(iota client gas --json | jq -r '.[0].gasCoinId')
+iota client split-coin --coin-id $coinObjectId --count 2 --dev-inspect

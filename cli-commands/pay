@@ -1,0 +1,3 @@
+activeAddress=$(iota client active-address)
+coinObjectId=$(iota client gas --json | jq -r '.[0].gasCoinId')
+iota client pay --amounts 0 --recipients $activeAddress --input-coins $coinObjectId --gas-budget 1000000 --dev-inspect

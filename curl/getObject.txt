@@ -5,8 +5,15 @@ curl https://api.testnet.iota.cafe \
     "id": 1,
     "method": "iota_getObject",
     "params": {
-        "object_id": "0x0067d0773a7f7f94c5deb2e6f20d99636026357272beee3f2c1528abe3c40dd7",
-        "options": { 
+        "object_id": "0x7ce243bdce4b9d54d432353a8e57f895c033040695d3602910792c2a6e37253a",
+        "options": {
+            "showType": true,
+            "showOwner": false,
+            "showPreviousTransaction": false,
+            "showDisplay": false,
+            "showContent": false,
+            "showBcs": true,
+            "showStorageRebate": false
         }
     }
 }'
