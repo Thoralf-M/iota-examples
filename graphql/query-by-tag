@@ -1,0 +1,22 @@
+{
+  objects(filter: {type: "0x2::coin::CoinMetadata<0x2::iota::IOTA>"}) {
+    edges {
+      node {
+        address
+        asMoveObject {
+          contents {
+            type { repr }
+          }
+        }
+      }
+    }
+  }
+}
+
+
+curl -i -X POST https://graphql.testnet.iota.cafe \
+     --header 'x-iota-rpc-show-usage: true' \
+     --header 'Content-Type: application/json' \
+     --data '{
+        "query": "{\n  objects(filter: {type: \"0x2::coin::CoinMetadata<0x2::iota::IOTA>\"}) {\n    edges {\n      node {\n        address\n        asMoveObject {\n          contents {\n            type { repr }\n          }\n        }\n      }\n    }\n  }\n}"
+     }'
