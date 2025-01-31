@@ -14,3 +14,23 @@ iota client ptb \
 --assign split_staked_iota \
 --move-call 0x3::iota_system::request_withdraw_stake @0x5 split_staked_iota \
 --gas-budget 100000000
+
+# create a timelock, 2 days from now
+LOCK_TIME=$(date -d "+2 day" +%s000)
+iota client ptb \
+--assign recipient @0xae98475c63cfebc918b57193a4183f4374f67974971aff9034699793d331d7de \
+--assign amount 1000000000 \
+--split-coins gas "[amount]" \
+--assign coin \
+--move-call 0x2::coin::into_balance "<0x2::iota::IOTA>" coin \
+--assign balance \
+--move-call 0x2::timelock::lock_and_transfer "<0x2::balance::Balance<0x2::iota::IOTA>>" balance recipient $LOCK_TIME \
+--dry-run
+
+# timelocked stake
+iota client ptb \
+--assign validator_address @0x392316417a23198afeeb80d9fec314c65162ab5ad18f8a4c3375d31deab29670 \
+--assign timelocked_stake @0xb803d05795db8ae1ab715c2542a945d1c156b586804271ae7c4d080a5c1d3757 \
+--move-call 0x3::timelocked_staking::request_add_stake @0x5 timelocked_stake validator_address \
+--gas-budget 50000000 \
+--dry-run
