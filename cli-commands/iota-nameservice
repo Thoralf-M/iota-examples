@@ -1,0 +1,307 @@
+# devnet
+# iotans object https://explorer.rebased.iota.org/object/0x61e87238b5fb84112389445f8fed701f1013d225edbe6ec57a80912b7e608e12?network=devnet
+# register tx: https://explorer.rebased.iota.org/txblock/8BxrBpnEmkuxBXCYXVg5i3pB5kHB7UchFjtBZL5QzbEN?network=devnet
+IOTANS_PACKAGE_ID=0x323b9fd87dcf0c5cbfdddeb43bf9834b4da5493246cfac2ae59e7b9b0fa62a99
+IOTANS_OBJECT_ID=0x61e87238b5fb84112389445f8fed701f1013d225edbe6ec57a80912b7e608e12
+REGISTRATION_PACKAGE_ID=0x51f69ff4853e6db1b3c640149e7f7aa703d2234df70759fa8418590666a76853
+UTILS_PACKAGE_ID=0x7dac054be28072957fe99fae70b49d47eb7de18326949b27fe81e02ab2fba49f
+YEARS=1
+DOMAIN_NAME='"thoralf.iota"'
+TARGET_ADDRESS=$(iota client active-address)
+iota client ptb \
+--split-coins gas "[500000000]" \
+--assign coins \
+--move-call $REGISTRATION_PACKAGE_ID::register::register @$IOTANS_OBJECT_ID $DOMAIN_NAME $YEARS coins.0 @0x6 \
+--assign res \
+--move-call $UTILS_PACKAGE_ID::direct_setup::set_target_address @$IOTANS_OBJECT_ID res "some(@$TARGET_ADDRESS)" @0x6 \
+--transfer-objects "[res]" @$TARGET_ADDRESS \
+--dry-run
+
+# set set_reverse_lookup
+iota client ptb \
+--move-call $UTILS_PACKAGE_ID::direct_setup::set_reverse_lookup @$IOTANS_OBJECT_ID $DOMAIN_NAME \
+--dry-run
+
+# set set_data 
+iota client ptb \
+--move-call 0x89a08caea0b677b8c4067a0e174de47bba8cef606f5edc29a804d773d1e5df4f::direct_setup::set_user_data @0x093738ab2ff173e45e93a59bf7cc1adbf6e16e17f414446459a42940cc5dcf86 @0x1a593c66b93e01fa74e88d53e4d0fea49e0c27f5b948ba71f17782b304129ec0 '"my_key"' '"my_value"' @0x6 \
+--gas-budget 50000000
+
+# resolve address
+iota client ptb \
+--move-call $IOTANS_PACKAGE_ID::iotans::registry "<$IOTANS_PACKAGE_ID::registry::Registry>" @$IOTANS_OBJECT_ID \
+--assign iotans \
+--move-call $IOTANS_PACKAGE_ID::domain::new '"thoralf.iota"' \
+--assign domain \
+--move-call $IOTANS_PACKAGE_ID::registry::lookup iotans domain \
+--assign name_record_option \
+--move-call 0x1::option::borrow "<$IOTANS_PACKAGE_ID::name_record::NameRecord>" name_record_option \
+--assign name_record \
+--move-call $IOTANS_PACKAGE_ID::name_record::target_address name_record \
+--assign target_address_option \
+--move-call 0x1::option::borrow "<address>" target_address_option \
+--assign target_address \
+--dev-inspect
+
+# resolve address (reverse lookup/reverse resolution)
+iota client ptb \
+--move-call $IOTANS_PACKAGE_ID::iotans::registry "<$IOTANS_PACKAGE_ID::registry::Registry>" @$IOTANS_OBJECT_ID \
+--assign iotans \
+--move-call $IOTANS_PACKAGE_ID::registry::reverse_lookup iotans @0x13259712d88c8b9b5d1c1cef3e19c72abd84d26b872b92dbbab3798b325b0a71 \
+--assign domain_option \
+--move-call 0x1::option::borrow "<$IOTANS_PACKAGE_ID::domain::Domain>" domain_option \
+--assign domain \
+--move-call $IOTANS_PACKAGE_ID::domain::to_string domain \
+--assign name \
+--dev-inspect
+
+# resolve address (reverse lookup/reverse resolution) and print as utf-8
+ADDRESS=0xbb9aae52e92a870876b44eab4582011070ceff28b87176529c6051f3e8e64a34
+inspect_output=$(iota client ptb \
+--move-call $IOTANS_PACKAGE_ID::iotans::registry "<$IOTANS_PACKAGE_ID::registry::Registry>" @$IOTANS_OBJECT_ID \
+--assign iotans \
+--move-call $IOTANS_PACKAGE_ID::registry::reverse_lookup iotans @$ADDRESS \
+--assign domain_option \
+--move-call 0x1::option::borrow "<$IOTANS_PACKAGE_ID::domain::Domain>" domain_option \
+--assign domain \
+--move-call $IOTANS_PACKAGE_ID::domain::to_string domain \
+--assign name \
+--dev-inspect)
+# Extract the last bytes from the inspect_output
+bytes=($(echo "$inspect_output" | grep -o 'Bytes: \[.*\]' | tail -n 1 | sed -E 's/[^0-9,]//g' | tr ',' '\n'))
+# Convert the byte values into a raw binary string
+name=""
+for byte in "${bytes[@]}"; do
+  name+=$(printf '\\x%02x' $byte)
+done
+echo -e "$name"
+
+# set all data
+iota client ptb \
+--make-move-vec "<std::string::String>" "['key1', 'key2']" \
+--assign keys \
+--make-move-vec "<std::string::String>" "['value1', 'value2']" \
+--assign values \
+--move-call 0x2::vec_map::from_keys_values "<std::string::String,std::string::String>" keys values \
+--assign data_vec_map \
+--move-call $IOTANS_PACKAGE_ID::domain::new '"thoralf.iota"' \
+--assign domain \
+--move-call iota::dynamic_field::borrow_mut @0x093738ab2ff173e45e93a59bf7cc1adbf6e16e17f414446459a42940cc5dcf86  \
+--assign registry \
+--move-call $IOTANS_PACKAGE_ID::registry::set_data registry domain data_vec_map \
+--gas-budget 50000000
+
+
+# packages init output
+******* Packages published successfully *******
+Published: {
+  IOTANS: {
+    packageId: '0x323b9fd87dcf0c5cbfdddeb43bf9834b4da5493246cfac2ae59e7b9b0fa62a99',
+    upgradeCap: '0x470c21ec558150ff46000942d13c138ce9e6b3fb2a64ae62aba4f5f36c4e5758',
+    publisher: '0xaf9bbadcd9fdd1a2300e1d646428df8f756148ca821a799f7a7b2ec7089539a5',
+    iotans: '0x61e87238b5fb84112389445f8fed701f1013d225edbe6ec57a80912b7e608e12',
+    adminCap: '0xd5694cc1ca29ea3e228a16f1b8728efdd1e33bc143ba905b171a4cfcd648e9ee'
+  },
+  Utils: {
+    packageId: '0x7dac054be28072957fe99fae70b49d47eb7de18326949b27fe81e02ab2fba49f',
+    upgradeCap: '0x8e706166da440a843b6779bdd58b155b38e6e50904f504e0aaa2c5a7bb14c67f'
+  },
+  DenyList: {
+    packageId: '0x7bdffb4cff0666126d2426409b87192b8633b6647ce6d813b7cdab0c2a1517a1',
+    upgradeCap: '0xa1d2e6706eebd7409a411e1c3a214e46e826785cba465a073cc14e469f75d561'
+  },
+  Registration: {
+    packageId: '0x51f69ff4853e6db1b3c640149e7f7aa703d2234df70759fa8418590666a76853',
+    upgradeCap: '0x37e46c4a771fe572e30d989fdfd12bf39ded5c48f4d5d470632e744fe5376abb'
+  },
+  Renewal: {
+    packageId: '0x1bd546526a5c7ba9d4bac2e3292f68cb1c572fa6d9e42ba2472d5585dab61c3d',
+    upgradeCap: '0x0e0e6cbe57c3d3f6c152f189317b109e0d9d0cb30c4bd1ff4b7728de6aae58ee'
+  },
+  DayOne: {
+    packageId: '0x40c7ab56a4a6c32b571c5ce2575f5b6f7648d4605d3f0faff559d9ad106b47ab',
+    upgradeCap: '0x7bbba36d55b745ecab24b216fed9c3dac1057f847a12d358355766390691022c'
+  },
+  Coupons: {
+    packageId: '0x66ab98b0886b1867470d15450259c209147b1727db7c8bd579c13a2d0d52f88e',
+    upgradeCap: '0x4a646092c5062cd7f8e60351adccff0a49096887551b4734468f58d8b49cbaec'
+  },
+  Subdomains: {
+    packageId: '0x9d4bbb77db78317a358149445ea458255a22d93015829d9d2426564196e0fcaf',
+    upgradeCap: '0x513d8c94387a588de6ae4d5219c19c92d98afc64b6bdfb349cc71fde4e2c4b57'
+  },
+  Discounts: {
+    packageId: '0x0465ff9bfe81c68b387588d86f97c60111beff8eb06fa91fe7dc2ce41b6571c0',
+    upgradeCap: '0xea22f08ce49e99f03d0bda366919b6dd673f61ce25d76d773043c6bccf7f00c9',
+    discountHouse: '0x36c7f6a90f52e3f420a13f33b21290777c28cb92ec9050e976237009a1e62df9'
+  },
+  TempSubdomainProxy: {
+    packageId: '0x5356dd9fc2174d7622d7d8b8a21c629844d95afedfbb0915011d5daf6f9cbba2',
+    upgradeCap: '0x223bf8a9f7fcfe1cbe87392131229c3630cd2ba959df108f43bc7d9d087a2b24'
+  }
+}
+Retrying setup...
+******* Packages set up successfully *******
+{
+  iotansPackageId: {
+    latest: '0x323b9fd87dcf0c5cbfdddeb43bf9834b4da5493246cfac2ae59e7b9b0fa62a99',
+    v1: '0x323b9fd87dcf0c5cbfdddeb43bf9834b4da5493246cfac2ae59e7b9b0fa62a99'
+  },
+  iotansObjectId: '0x61e87238b5fb84112389445f8fed701f1013d225edbe6ec57a80912b7e608e12',
+  utilsPackageId: '0x7dac054be28072957fe99fae70b49d47eb7de18326949b27fe81e02ab2fba49f',
+  registrationPackageId: '0x51f69ff4853e6db1b3c640149e7f7aa703d2234df70759fa8418590666a76853',
+  renewalPackageId: '0x1bd546526a5c7ba9d4bac2e3292f68cb1c572fa6d9e42ba2472d5585dab61c3d',
+  subNamesPackageId: '0x9d4bbb77db78317a358149445ea458255a22d93015829d9d2426564196e0fcaf',
+  tempSubNamesProxyPackageId: '0x5356dd9fc2174d7622d7d8b8a21c629844d95afedfbb0915011d5daf6f9cbba2'
+}
+{
+  data: [
+    {
+      name: [Object],
+      bcsName: '1',
+      type: 'DynamicField',
+      objectType: '0x1bd546526a5c7ba9d4bac2e3292f68cb1c572fa6d9e42ba2472d5585dab61c3d::renew::RenewalConfig',
+      objectId: '0x27b6f34c82789c85af70d536b7fd70c1d1d15848df7ef8d91e76602a8f7c5ff4',
+      version: 3881,
+      digest: 'DWrqT9EXZ9tFdwdXLJPwxUXasgahSm7H8DKbSc1aT5EJ'
+    },
+    {
+      name: [Object],
+      bcsName: '1',
+      type: 'DynamicField',
+      objectType: 'bool',
+      objectId: '0x28b701b1764338c7d05ff38fa8515238e2b84c08f06462a2512e873228c1e1e4',
+      version: 3881,
+      digest: '4CiQwTVf6aAWV2AojhzDs1yug9oBxDBCndSu7bYGtYu3'
+    },
+    {
+      name: [Object],
+      bcsName: '1',
+      type: 'DynamicField',
+      objectType: 'bool',
+      objectId: '0x2d3c8db6d518555fa2a53fb19e7ffcc150da9d1aaf27a84068da4a154650f60c',
+      version: 3881,
+      digest: 'AXG1UeornyS99bzhGd9ytzoLkyZyRiznohk9TdN546Bo'
+    },
+    {
+      name: [Object],
+      bcsName: '1',
+      type: 'DynamicField',
+      objectType: 'bool',
+      objectId: '0x53cca984fcb6eaafa0cb57c62f0b5511aedd7bb264084a8dc3005c6172979cb6',
+      version: 3881,
+      digest: 'ADaqXS9wdWQoNwW2JPBuNaSezXxyE9N9FqPfpk3buTLN'
+    },
+    {
+      name: [Object],
+      bcsName: '1',
+      type: 'DynamicField',
+      objectType: '0x9d4bbb77db78317a358149445ea458255a22d93015829d9d2426564196e0fcaf::config::SubDomainConfig',
+      objectId: '0x5b779c4f24806808dfc2bb80f782a7af90e7b59b4714a5c34c921556f7a3c431',
+      version: 3881,
+      digest: 'VAuX4WnozpqtMZubbFiBdd1DAEfJQLzr5fNXG8q55Xg'
+    },
+    {
+      name: [Object],
+      bcsName: '1',
+      type: 'DynamicField',
+      objectType: 'bool',
+      objectId: '0x66664582ea5cecee7224e6ff7af7a703f8a7a50540f1e96c70cf569947f856f4',
+      version: 3881,
+      digest: '4YRwnjRgkLhxR4vVh44Pwe1eLHJ8CPwBWHTX9cftB3LF'
+    },
+    {
+      name: [Object],
+      bcsName: '1',
+      type: 'DynamicField',
+      objectType: '0x323b9fd87dcf0c5cbfdddeb43bf9834b4da5493246cfac2ae59e7b9b0fa62a99::registry::Registry',
+      objectId: '0x8c1bf52af438fc97f07f6ad2a1af27b6d3044bc5e08e1b2d71ca764e6a8b4503',
+      version: 3881,
+      digest: '7eXdxsKnzmYeqwErfBv8xfcEPG37tZGtC2TP7kfvt2uC'
+    },
+    {
+      name: [Object],
+      bcsName: '1',
+      type: 'DynamicField',
+      objectType: 'bool',
+      objectId: '0x9352028f5e6e4737f383951261bb283ea710277132f4abdfbc57c1ca1e4ec8c8',
+      version: 3881,
+      digest: 'EXQCZZGdGrMYrutagE8L9KfizDmXzZ5ct3s3DVMbtzox'
+    },
+    {
+      name: [Object],
+      bcsName: '1',
+      type: 'DynamicField',
+      objectType: '0x7bdffb4cff0666126d2426409b87192b8633b6647ce6d813b7cdab0c2a1517a1::denylist::Denylist',
+      objectId: '0xafe3a8d641dd63c58a0e228a4aab28a050cea052e490f0372162842de1a0504c',
+      version: 3881,
+      digest: '94oYA5hox8Gofgp1DTpeHmLMx72wbLDs1euLmfPZrHSs'
+    },
+    {
+      name: [Object],
+      bcsName: '1',
+      type: 'DynamicField',
+      objectType: '0x66ab98b0886b1867470d15450259c209147b1727db7c8bd579c13a2d0d52f88e::coupon_house::CouponHouse',
+      objectId: '0xbe0afc876e9959183f1827ae1d10bf31ab8d0b249e0cb8d8fbe38934f117be79',
+      version: 3881,
+      digest: '4bjyaTEPmiifQY8TYKDfkEusLzXEuCXxYxkXxPG81ZnN'
+    },
+    {
+      name: [Object],
+      bcsName: '1',
+      type: 'DynamicField',
+      objectType: '0x323b9fd87dcf0c5cbfdddeb43bf9834b4da5493246cfac2ae59e7b9b0fa62a99::config::Config',
+      objectId: '0xd14783ca9f40cb4eaa30151442f1bafcab4bfee9a5bbf461f30a786935f1fcd2',
+      version: 3881,
+      digest: 'Gd1KKqAxk4E2YuSj7C6NPiQRUdvFjDp5kf1fWSiP8n7h'
+    },
+    {
+      name: [Object],
+      bcsName: '1',
+      type: 'DynamicField',
+      objectType: 'bool',
+      objectId: '0xe2b897e736d972b1d2f80c254b915d53df7122406656fe29ac6238ccc3dcc1ed',
+      version: 3881,
+      digest: '6hAmZmnBRFTJ4jize5R2mL3qgEVYw8ZjDHHjqGmWdESR'
+    },
+    {
+      name: [Object],
+      bcsName: '1',
+      type: 'DynamicField',
+      objectType: 'bool',
+      objectId: '0xf884e720ed339c1b9c2e8f1672d756782e99f463709b7efed60c194dad79f313',
+      version: 3881,
+      digest: 'EL6nGXTCyawJFu4EcGCLZGsUok7941KwEv2fhrrL6obe'
+    },
+    {
+      name: [Object],
+      bcsName: '1',
+      type: 'DynamicField',
+      objectType: 'bool',
+      objectId: '0xff995665323897d216fdc0873447fd0aaa28d109d695d28de2f164b9d1cd8157',
+      version: 3881,
+      digest: 'DtNEWN3Qk7heL2AjM6hudjRqJcvvNsNYqzgSKCZGNWrr'
+    }
+  ],
+  nextCursor: '0xff995665323897d216fdc0873447fd0aaa28d109d695d28de2f164b9d1cd8157',
+  hasNextPage: false
+}
+{
+  data: {
+    objectId: '0x8c1bf52af438fc97f07f6ad2a1af27b6d3044bc5e08e1b2d71ca764e6a8b4503',
+    version: '3881',
+    digest: '7eXdxsKnzmYeqwErfBv8xfcEPG37tZGtC2TP7kfvt2uC',
+    type: '0x2::dynamic_field::Field<0x323b9fd87dcf0c5cbfdddeb43bf9834b4da5493246cfac2ae59e7b9b0fa62a99::iotans::RegistryKey<0x323b9fd87dcf0c5cbfdddeb43bf9834b4da5493246cfac2ae59e7b9b0fa62a99::registry::Registry>, 0x323b9fd87dcf0c5cbfdddeb43bf9834b4da5493246cfac2ae59e7b9b0fa62a99::registry::Registry>',
+    owner: {
+      ObjectOwner: '0x61e87238b5fb84112389445f8fed701f1013d225edbe6ec57a80912b7e608e12'
+    },
+    previousTransaction: 'E9tAVtYaSdDCVKzi7MnUh8ePjwQ4cpZ9iQUZuTBSt2Sy',
+    storageRebate: '3131200',
+    content: {
+      dataType: 'moveObject',
+      type: '0x2::dynamic_field::Field<0x323b9fd87dcf0c5cbfdddeb43bf9834b4da5493246cfac2ae59e7b9b0fa62a99::iotans::RegistryKey<0x323b9fd87dcf0c5cbfdddeb43bf9834b4da5493246cfac2ae59e7b9b0fa62a99::registry::Registry>, 0x323b9fd87dcf0c5cbfdddeb43bf9834b4da5493246cfac2ae59e7b9b0fa62a99::registry::Registry>',
+      fields: [Object]
+    }
+  }
+}
+0x61e87238b5fb84112389445f8fed701f1013d225edbe6ec57a80912b7e608e12
