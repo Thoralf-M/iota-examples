@@ -1,0 +1,17 @@
+curl http://localhost:9124 \
+--header 'content-type: application/json' \
+--data '{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "iotax_getOwnedObjects",
+  "params": ["0xbb9aae52e92a870876b44eab4582011070ceff28b87176529c6051f3e8e64a34"]
+}'
+
+curl https://indexer.devnet.iota.cafe \
+--header 'content-type: application/json' \
+--data '{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "iotax_getOwnedObjects",
+  "params": ["0xbb9aae52e92a870876b44eab4582011070ceff28b87176529c6051f3e8e64a34"]
+}'

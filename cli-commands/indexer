@@ -1,0 +1,11 @@
+docker run --rm --name postgres_indexer -e POSTGRES_PASSWORD=postgrespw -e POSTGRES_USER=postgres -e POSTGRES_DB=iota_indexer -d -p 5432:5432 postgres -N 1000
+# or
+docker run -d --name postgres \
+ -e POSTGRES_PASSWORD=postgrespw \
+ -e POSTGRES_INITDB_ARGS="-U postgres" \
+ -p 5432:5432 \
+ postgres:15 \
+ -c max_connections=1000
+ 
+cargo run --features=indexer start --force-regenesis --with-faucet --with-indexer
+iota start --force-regenesis --with-faucet --with-indexer

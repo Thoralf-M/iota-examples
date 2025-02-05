@@ -1,0 +1,17 @@
+curl http://localhost:9124 \
+--header 'content-type: application/json' \
+--data '{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "iotax_getNetworkMetrics",
+  "params": []
+}'
+
+curl https://indexer.devnet.iota.cafe \
+--header 'content-type: application/json' \
+--data '{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "iotax_getNetworkMetrics",
+  "params": []
+}'
