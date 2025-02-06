@@ -1,0 +1,23 @@
+curl https://indexer.testnet.iota.cafe \
+--header 'content-type: application/json' \
+--data '{
+    "jsonrpc": "2.0",
+    "id": 6,
+    "method": "iotax_queryTransactionBlocks",
+    "params": [
+        {
+            "filter": {
+                "FromOrToAddress": {
+                    "addr": "0x111111111504e9350e635d65cd38ccd2c029434c6a3a480d8947a9ba6a15b215"
+                }
+            },
+            "options": {
+                "showEffects": true,
+                "showInput": true
+            }
+        },
+        null,
+        5,
+        true
+    ]
+}'
