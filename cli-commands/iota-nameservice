@@ -5,6 +5,7 @@ IOTANS_PACKAGE_ID=0x323b9fd87dcf0c5cbfdddeb43bf9834b4da5493246cfac2ae59e7b9b0fa6
 IOTANS_OBJECT_ID=0x61e87238b5fb84112389445f8fed701f1013d225edbe6ec57a80912b7e608e12
 REGISTRATION_PACKAGE_ID=0x51f69ff4853e6db1b3c640149e7f7aa703d2234df70759fa8418590666a76853
 UTILS_PACKAGE_ID=0x7dac054be28072957fe99fae70b49d47eb7de18326949b27fe81e02ab2fba49f
+ADMIN_CAP=0xd5694cc1ca29ea3e228a16f1b8728efdd1e33bc143ba905b171a4cfcd648e9ee
 YEARS=1
 DOMAIN_NAME='"thoralf.iota"'
 TARGET_ADDRESS=$(iota client active-address)
@@ -24,14 +25,26 @@ iota client ptb \
 
 # set set_data 
 iota client ptb \
---move-call 0x89a08caea0b677b8c4067a0e174de47bba8cef606f5edc29a804d773d1e5df4f::direct_setup::set_user_data @0x093738ab2ff173e45e93a59bf7cc1adbf6e16e17f414446459a42940cc5dcf86 @0x1a593c66b93e01fa74e88d53e4d0fea49e0c27f5b948ba71f17782b304129ec0 '"my_key"' '"my_value"' @0x6 \
---gas-budget 50000000
+--move-call $UTILS_PACKAGE_ID::direct_setup::set_user_data @0x093738ab2ff173e45e93a59bf7cc1adbf6e16e17f414446459a42940cc5dcf86 @0x1a593c66b93e01fa74e88d53e4d0fea49e0c27f5b948ba71f17782b304129ec0 '"my_key"' '"my_value"' @0x6 \
+--dry-run
+
+# authorize admin 
+IOTANS_PACKAGE_ID=0x323b9fd87dcf0c5cbfdddeb43bf9834b4da5493246cfac2ae59e7b9b0fa62a99
+IOTANS_OBJECT_ID=0x61e87238b5fb84112389445f8fed701f1013d225edbe6ec57a80912b7e608e12
+ADMIN_CAP=0xd5694cc1ca29ea3e228a16f1b8728efdd1e33bc143ba905b171a4cfcd648e9ee
+iota client ptb \
+--move-call $IOTANS_PACKAGE_ID::admin::authorize @$ADMIN_CAP @$IOTANS_OBJECT_ID \
+--dry-run
+iota client ptb \
+--move-call $IOTANS_PACKAGE_ID::iotans::authorize_app "<$IOTANS_PACKAGE_ID::admin::Admin>" @$ADMIN_CAP @$IOTANS_OBJECT_ID \
+--dry-run
 
 # resolve address
+DOMAIN_NAME='"thoralf.iota"'
 iota client ptb \
 --move-call $IOTANS_PACKAGE_ID::iotans::registry "<$IOTANS_PACKAGE_ID::registry::Registry>" @$IOTANS_OBJECT_ID \
 --assign iotans \
---move-call $IOTANS_PACKAGE_ID::domain::new '"thoralf.iota"' \
+--move-call $IOTANS_PACKAGE_ID::domain::new $DOMAIN_NAME \
 --assign domain \
 --move-call $IOTANS_PACKAGE_ID::registry::lookup iotans domain \
 --assign name_record_option \
@@ -43,7 +56,7 @@ iota client ptb \
 --assign target_address \
 --dev-inspect
 
-# resolve address (reverse lookup/reverse resolution)
+# resolve name (reverse lookup/reverse resolution)
 iota client ptb \
 --move-call $IOTANS_PACKAGE_ID::iotans::registry "<$IOTANS_PACKAGE_ID::registry::Registry>" @$IOTANS_OBJECT_ID \
 --assign iotans \
@@ -55,7 +68,7 @@ iota client ptb \
 --assign name \
 --dev-inspect
 
-# resolve address (reverse lookup/reverse resolution) and print as utf-8
+# resolve name (reverse lookup/reverse resolution) and print as utf-8
 ADDRESS=0xbb9aae52e92a870876b44eab4582011070ceff28b87176529c6051f3e8e64a34
 inspect_output=$(iota client ptb \
 --move-call $IOTANS_PACKAGE_ID::iotans::registry "<$IOTANS_PACKAGE_ID::registry::Registry>" @$IOTANS_OBJECT_ID \
