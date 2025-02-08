@@ -1,8 +1,7 @@
 import { IotaClient } from '@iota/iota-sdk/client';
 
 const client = new IotaClient({
-    url: 'https://api.iota-rebased-alphanet.iota.cafe',
-    // url: 'https://api.hackanet.iota.cafe',
+    url: 'https://api.testnet.iota.cafe',
 });
 
 (async () => {
@@ -14,7 +13,6 @@ const client = new IotaClient({
 
     const txBlocksPage = await client.queryTransactionBlocks({ limit: 2 })
     console.log(txBlocksPage)
-    // showRawEffects currently always true for the indexer https://github.com/iotaledger/iota/issues/2488
-    const txBlock = await client.getTransactionBlock({ digest: txBlocksPage.data[0].digest, options: { showObjectChanges: true, showRawEffects: false } })
+    const txBlock = await client.getTransactionBlock({ digest: txBlocksPage.data[0].digest, options: { showObjectChanges: true } })
     console.log(txBlock)
 })()

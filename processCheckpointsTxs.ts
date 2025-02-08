@@ -12,7 +12,7 @@ import { requestIotaFromFaucetV0 } from '@iota/iota-sdk/faucet';
     // await new Promise(r => setTimeout(r, 2000));
 
     const client = new IotaClient({
-        url: 'https://api.iota-rebased-alphanet.iota.cafe',
+        url: 'https://api.testnet.iota.cafe',
     });
 
     // Called in cronjob, then starting from latest known checkpoint until this one
@@ -20,7 +20,7 @@ import { requestIotaFromFaucetV0 } from '@iota/iota-sdk/faucet';
     console.log("Latest checkpoint number: " + latestCheckpoint)
     // Uncomment to overwrite with checkpoint with known tx
     // latestCheckpoint = 4423313
-    latestCheckpoint = 3984083
+    // latestCheckpoint = 3984083
 
     let lastKnownCheckpoint = latestCheckpoint - 10
 
@@ -30,8 +30,6 @@ import { requestIotaFromFaucetV0 } from '@iota/iota-sdk/faucet';
         const checkpoint = await client.getCheckpoint({ id: checkpointNumber.toString() });
 
         const transactions = await client.multiGetTransactionBlocks({ digests: checkpoint.transactions, options: { showBalanceChanges: true, showEffects: true } });
-        // temp workaround
-        transactions.map(transaction => delete transaction.rawEffects)
         for (const transaction of transactions) {
             if (transaction.effects == null || transaction.effects.status.status != 'success') {
                 continue;

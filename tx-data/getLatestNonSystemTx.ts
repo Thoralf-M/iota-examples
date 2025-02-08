@@ -1,10 +1,9 @@
 import { IotaClient } from '@iota/iota-sdk/client';
 
 const client = new IotaClient({
-    url: 'http://127.0.0.1:9000',
-    // url: 'https://api.iota-rebased-alphanet.iota.cafe',
+    // url: 'http://127.0.0.1:9000',
+    url: 'https://api.testnet.iota.cafe',
 });
-
 
 let cursor;
 let txsToFind = 5;
@@ -28,8 +27,6 @@ let txsToFind = 5;
             ) {
                 // Cleanup output
                 try {
-                    // Temp fix to not spam the console output as the raw effects are currently always included https://github.com/iotaledger/iota/issues/2488
-                    delete txBlock.rawEffects
                     // @ts-ignore
                     delete txBlock.transaction.data.messageVersion
                     // @ts-ignore

@@ -1,2 +1,0 @@
-- consolidate from an address with 100*1 nano objects possible?
-- tx with gas cost == gas coin https://docs.iota.org/developer/iota-101/transactions/gas-smashing
