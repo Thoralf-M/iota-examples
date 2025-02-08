@@ -57,10 +57,11 @@ iota client ptb \
 --dev-inspect
 
 # resolve name (reverse lookup/reverse resolution)
+ADDRESS=0xbb9aae52e92a870876b44eab4582011070ceff28b87176529c6051f3e8e64a34
 iota client ptb \
 --move-call $IOTANS_PACKAGE_ID::iotans::registry "<$IOTANS_PACKAGE_ID::registry::Registry>" @$IOTANS_OBJECT_ID \
 --assign iotans \
---move-call $IOTANS_PACKAGE_ID::registry::reverse_lookup iotans @0x13259712d88c8b9b5d1c1cef3e19c72abd84d26b872b92dbbab3798b325b0a71 \
+--move-call $IOTANS_PACKAGE_ID::registry::reverse_lookup iotans @$ADDRESS \
 --assign domain_option \
 --move-call 0x1::option::borrow "<$IOTANS_PACKAGE_ID::domain::Domain>" domain_option \
 --assign domain \
