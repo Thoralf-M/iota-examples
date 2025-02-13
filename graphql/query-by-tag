@@ -1,11 +1,11 @@
 {
-  objects(filter: {type: "0x2::coin::CoinMetadata<0x2::iota::IOTA>"}) {
+  objects(filter: { type: "0x2::coin::CoinMetadata<0x2::iota::IOTA>" }) {
     edges {
       node {
         address
         asMoveObject {
           contents {
-            type { repr }
+            json
           }
         }
       }
