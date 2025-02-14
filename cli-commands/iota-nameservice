@@ -7,16 +7,39 @@ REGISTRATION_PACKAGE_ID=0x51f69ff4853e6db1b3c640149e7f7aa703d2234df70759fa841859
 UTILS_PACKAGE_ID=0x7dac054be28072957fe99fae70b49d47eb7de18326949b27fe81e02ab2fba49f
 ADMIN_CAP=0xd5694cc1ca29ea3e228a16f1b8728efdd1e33bc143ba905b171a4cfcd648e9ee
 YEARS=1
+# price for 3 chars: 5000000000
+# price for 4 chars: 2000000000
+# price for 5+ chars: 500000000
 DOMAIN_NAME='"thoralf.iota"'
 TARGET_ADDRESS=$(iota client active-address)
 iota client ptb \
---split-coins gas "[500000000]" \
+--split-coins gas "[2000000000]" \
 --assign coins \
 --move-call $REGISTRATION_PACKAGE_ID::register::register @$IOTANS_OBJECT_ID $DOMAIN_NAME $YEARS coins.0 @0x6 \
 --assign res \
 --move-call $UTILS_PACKAGE_ID::direct_setup::set_target_address @$IOTANS_OBJECT_ID res "some(@$TARGET_ADDRESS)" @0x6 \
 --transfer-objects "[res]" @$TARGET_ADDRESS \
 --dry-run
+
+# compute price
+YEARS=1
+DOMAIN_NAME_WITHOUT_TLD="iota"
+LENGTH=${#DOMAIN_NAME_WITHOUT_TLD}
+inspect_output=$(iota client ptb \
+--move-call $IOTANS_PACKAGE_ID::iotans::get_config "<$IOTANS_PACKAGE_ID::config::Config>" @$IOTANS_OBJECT_ID \
+--assign config \
+--move-call $IOTANS_PACKAGE_ID::config::calculate_price config $LENGTH $YEARS \
+--dev-inspect)
+bytes=($(echo "$inspect_output" | grep -o 'Bytes: \[.*\]' | tail -n 1 | sed -E 's/[^0-9,]//g' | tr ',' '\n'))
+HEX_VALUES=$(echo $bytes | tr ' ' '\n' | xargs -I {} printf "\\\\x%02x" {})
+echo -n -e $HEX_VALUES | od -An -t u8 | tr -d ' '
+
+# convert the result bytes in JS
+const bytes = new Uint8Array([0, 148, 53, 119, 0, 0, 0, 0]);
+const buffer = bytes.buffer;
+const view = new DataView(buffer);
+const u64Number = view.getBigUint64(0, true); // 'true' for little-endian, 'false' for big-endian
+console.log(u64Number.toString()); 
 
 # set set_reverse_lookup
 iota client ptb \
