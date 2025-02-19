@@ -1,0 +1,63 @@
+{
+  "iotaCoin": {
+    "digest": "BmJpM73u21AiYe9ApHQWyahECEyo4Gx6Q8TVLwTY7NGa",
+    "targetAddresses": [
+      "0x9938c94f4118153bbed08f14ae74e2557172542f59bf0b7a306e99d5a0b0896e"
+    ]
+  },
+  "failed": {
+    "digest": "AYNqRLNwUWh3DKkxWQkSs8j5CWgRpduBrq7FM6RmFSh2",
+    "targetAddresses": [
+      "0x9938c94f4118153bbed08f14ae74e2557172542f59bf0b7a306e99d5a0b0896e"
+    ]
+  },
+  "zeroIotaCoin": {
+    "digest": "4TQcnNoft6LAxq6UT8Wa6oFSFLotdpAGvztfNfssUUfn",
+    "targetAddresses": [
+      "0x9938c94f4118153bbed08f14ae74e2557172542f59bf0b7a306e99d5a0b0896e"
+    ]
+  },
+  "nonIotaCoin": {
+    "digest": "A7sw3jBMV2A1Vpo9cWVJe55WGXCAPQHmyABQgyAhe7Qa",
+    "targetAddresses": [
+      "0x9938c94f4118153bbed08f14ae74e2557172542f59bf0b7a306e99d5a0b0896e"
+    ]
+  },
+  "nonCoinObject": {
+    "digest": "8GxC2HKewzBguUZTj8P3y7qBgqpNi3hQuqUGQcDa9ZAs",
+    "targetAddresses": [
+      "0x9938c94f4118153bbed08f14ae74e2557172542f59bf0b7a306e99d5a0b0896e"
+    ]
+  },
+  "gasSponsor": {
+    "digest": "GaWhxDmX9UZ37ZYV7psxqXcpbdDMgrdvAV381A8fB2jg",
+    "targetAddresses": [
+      "0x9938c94f4118153bbed08f14ae74e2557172542f59bf0b7a306e99d5a0b0896e"
+    ]
+  },
+  "multipleAddresses": {
+    "digest": "BMi1GHghuFFahRc8q5F5YxZWV6xjaF6Foit8rr24YM7p",
+    "targetAddresses": [
+      "0x9938c94f4118153bbed08f14ae74e2557172542f59bf0b7a306e99d5a0b0896e",
+      "0xb79ea12d0aef3ec204ebcac7aa66482130877555954f81fe684bbeb649ff523b"
+    ]
+  },
+  "fromMultiSigAddress": {
+    "digest": "CPJhLHJLeuHkqjNLP2kaK2eNaWUjGMJWbRciwV1z6S1f",
+    "targetAddresses": [
+      "0x9938c94f4118153bbed08f14ae74e2557172542f59bf0b7a306e99d5a0b0896e"
+    ]
+  },
+  "smartContractCall": {
+    "digest": "FEBKCYzLZbMpPHMLEm5TuhfQLGkHdWodKVcv6hJ2GWJE",
+    "targetAddresses": [
+      "0x9938c94f4118153bbed08f14ae74e2557172542f59bf0b7a306e99d5a0b0896e"
+    ]
+  },
+  "transferGasCoin": {
+    "digest": "5Mgo1t2f6T8F3m7bekByP1goT24UmSxRYd2Z63U818zq",
+    "targetAddresses": [
+      "0x9938c94f4118153bbed08f14ae74e2557172542f59bf0b7a306e99d5a0b0896e"
+    ]
+  }
+}
