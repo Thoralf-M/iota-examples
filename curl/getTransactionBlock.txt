@@ -16,4 +16,4 @@ curl https://api.testnet.iota.cafe \
             "showRawEffects": false
         }
     }
-}'
+}' | jq .

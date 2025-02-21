@@ -4,7 +4,7 @@ curl https://api.testnet.iota.cafe \
     "jsonrpc": "2.0",
     "id": 1,
     "method": "iotax_getLatestIotaSystemState"
-}'
+}' | jq .
 
 # filter by validator with its iotaAddress
 VALIDATOR_IOTA_ADDRESS=0x9cb1889a79c32e5c5ac216e9ccfd1359deb2751c53228e7d07a5fdb5af5929ce

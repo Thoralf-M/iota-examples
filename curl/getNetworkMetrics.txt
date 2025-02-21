@@ -5,7 +5,7 @@ curl http://localhost:9124 \
   "id": 1,
   "method": "iotax_getNetworkMetrics",
   "params": []
-}'
+}' | jq .
 
 curl https://indexer.devnet.iota.cafe \
 --header 'content-type: application/json' \
@@ -14,4 +14,4 @@ curl https://indexer.devnet.iota.cafe \
   "id": 1,
   "method": "iotax_getNetworkMetrics",
   "params": []
-}'
+}' | jq .

@@ -20,4 +20,4 @@ curl https://indexer.testnet.iota.cafe \
         5,
         true
     ]
-}'
+}' | jq .

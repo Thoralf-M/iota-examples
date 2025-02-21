@@ -7,4 +7,4 @@ curl http://localhost:9000 \
     "params": {
         "id": "0"
     }
-}'
+}' | jq .
