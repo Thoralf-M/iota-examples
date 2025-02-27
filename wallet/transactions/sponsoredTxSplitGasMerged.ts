@@ -103,7 +103,7 @@ async function requestFundsIfNeeded(client: IotaClient, address: string) {
     const coinBalance = await client.getBalance({
         owner: address,
     });
-    if (parseInt(coinBalance.totalBalance) < 2_500_000) {
+    if (parseInt(coinBalance.totalBalance) < 2_500_000_000) {
         const faucetResponse = await requestIotaFromFaucetV0({
             host: 'https://faucet.iota-rebased-alphanet.iota.cafe/gas',
             recipient: address,
