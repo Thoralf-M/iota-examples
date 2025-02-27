@@ -19,7 +19,7 @@ Indexer: https://indexer.devnet.iota.cafe
 GraphQL: https://graphql.devnet.iota.cafe
 
 alphanet
-Indexer JSON RPC URL: https://api.iota-rebased-alphanet.iota.cafe
+Indexer JSON RPC URL: https://indexer.iota-rebased-alphanet.iota.cafe
 Node JSON RPC: https://api.iota-rebased-alphanet.iota.cafe
 Faucet URL: https://faucet.iota-rebased-alphanet.iota.cafe/gas
 Explorer: https://explorer.rebased.iota.org/?network=alphanet
