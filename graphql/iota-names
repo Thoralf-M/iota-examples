@@ -1,0 +1,28 @@
+{
+  objects(
+    filter: {
+        type: "0x20c890da38609db67e2713e6b33b4e4d3c6a8e9f620f9bb48f918d2337e31503::iota_names_registration::IotaNamesRegistration",
+        owner: "0x111111111504e9350e635d65cd38ccd2c029434c6a3a480d8947a9ba6a15b215"
+    }
+  ) {
+    nodes {
+      digest
+      display {
+        key
+        value
+      }
+      asMoveObject {
+        contents {
+          json
+        }
+      }
+    }
+  }
+}
+
+curl -i -X POST https://graphql.devnet.iota.cafe \
+     --header 'x-iota-rpc-show-usage: true' \
+     --header 'Content-Type: application/json' \
+     --data '{
+        "query": "{ objects(filter: {type: \"0x20c890da38609db67e2713e6b33b4e4d3c6a8e9f620f9bb48f918d2337e31503::iota_names_registration::IotaNamesRegistration\", owner: \"0x111111111504e9350e635d65cd38ccd2c029434c6a3a480d8947a9ba6a15b215\"}) { nodes { digest display { key value } asMoveObject { contents { json } } } } }"
+      }'
