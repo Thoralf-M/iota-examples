@@ -1,8 +1,8 @@
 # devnet
-# iota_names object https://explorer.rebased.iota.org/object/0x7a223639d9fbb6aa121cc4bd110c92a282ebe07b64de3a9f5e600174a8c90be8?network=devnet
-IOTA_NAMES_PACKAGE_ID=0x29ab1b20537b620febdb8bf1f93fcfb32d8024e96f4bd6661688f5ab2d912638
-IOTA_NAMES_OBJECT_ID=0x7a223639d9fbb6aa121cc4bd110c92a282ebe07b64de3a9f5e600174a8c90be8
-PAYMENTS_PACKAGE_ID=0xd0c72a25021bb06b3b998c54d5833b62ebc37098293086144902e1ec07ffb168
+# iota_names object https://explorer.rebased.iota.org/object/0xbf3563622035af599057c46f4b871e0a9817c7bab759354532402be6d9538ba3?network=devnet
+IOTA_NAMES_PACKAGE_ID=0xa1d2ed2008d31d358cfaf61a89aa7cfaa78ed183dbe683620258e98c59f48b13
+IOTA_NAMES_OBJECT_ID=0xbf3563622035af599057c46f4b871e0a9817c7bab759354532402be6d9538ba3
+PAYMENTS_PACKAGE_ID=0xb06b8075797480a9bb660c927b666ca0301cdffa622e7c6b9c583bd2b45c781a
 ADMIN_CAP=0xc67f174b790cbec683538b0a8ebee44a1ae6e4fec4ab8d34a59d896d843bb119
 # price for 3 chars: 1000000000
 # price for 4 chars: 500000000
@@ -53,8 +53,8 @@ iota client ptb \
 --dry-run
 
 # authorize admin 
-IOTA_NAMES_PACKAGE_ID=0x29ab1b20537b620febdb8bf1f93fcfb32d8024e96f4bd6661688f5ab2d912638
-IOTA_NAMES_OBJECT_ID=0x7a223639d9fbb6aa121cc4bd110c92a282ebe07b64de3a9f5e600174a8c90be8
+IOTA_NAMES_PACKAGE_ID=0xa1d2ed2008d31d358cfaf61a89aa7cfaa78ed183dbe683620258e98c59f48b13
+IOTA_NAMES_OBJECT_ID=0xbf3563622035af599057c46f4b871e0a9817c7bab759354532402be6d9538ba3
 ADMIN_CAP=0xc67f174b790cbec683538b0a8ebee44a1ae6e4fec4ab8d34a59d896d843bb119
 iota client ptb \
 --move-call $IOTA_NAMES_PACKAGE_ID::admin::authorize @$ADMIN_CAP @$IOTA_NAMES_OBJECT_ID \
@@ -64,7 +64,7 @@ iota client ptb \
 --dry-run
 
 # resolve address
-DOMAIN_NAME='"first.iota"'
+DOMAIN_NAME='"name.iota"'
 iota client ptb \
 --move-call $IOTA_NAMES_PACKAGE_ID::iota_names::registry "<$IOTA_NAMES_PACKAGE_ID::registry::Registry>" @$IOTA_NAMES_OBJECT_ID \
 --assign iota_names \
@@ -132,20 +132,20 @@ iota client ptb \
 
 # packages init output
 {
-  "adminAddress": "0x5a5e8ae064966a4117c658ac793bab2108d689a90ff0ae350a941c0e7db8a4ef",
-  "adminCap": "0xc67f174b790cbec683538b0a8ebee44a1ae6e4fec4ab8d34a59d896d843bb119",
-  "iotaNames": "0x7a223639d9fbb6aa121cc4bd110c92a282ebe07b64de3a9f5e600174a8c90be8",
-  "packageId": "0x29ab1b20537b620febdb8bf1f93fcfb32d8024e96f4bd6661688f5ab2d912638",
-  "packageIdPricing": "0x29ab1b20537b620febdb8bf1f93fcfb32d8024e96f4bd6661688f5ab2d912638",
-  "paymentsPackageId": "0xd0c72a25021bb06b3b998c54d5833b62ebc37098293086144902e1ec07ffb168",
-  "publisherId": "0x5a5e8ae064966a4117c658ac793bab2108d689a90ff0ae350a941c0e7db8a4ef",
-  "subNamesPackageId": "0xc227e5bb8c4d5d167c598169ee09025adbe0e98cb6ceff163c56ced93f32ef32",
-  "tempSubdomainsProxyPackageId": "0xf94b185c793cce91402b856fae62e9fb44e9cd932d9e35b99b3a5cc375778ec5",
+  "adminAddress": "0x8ef82376b4409969ebe3889af2d5cb3588b10426bf35152d47a0a18a91ef37d6",
+  "adminCap": "0x3014281d985cf1e2f640884d905c6c81aeb5951d14482e701428d4e611404a68",
+  "iotaNames": "0xbf3563622035af599057c46f4b871e0a9817c7bab759354532402be6d9538ba3",
+  "packageId": "0xa1d2ed2008d31d358cfaf61a89aa7cfaa78ed183dbe683620258e98c59f48b13",
+  "packageIdPricing": "0xa1d2ed2008d31d358cfaf61a89aa7cfaa78ed183dbe683620258e98c59f48b13",
+  "paymentsPackageId": "0xb06b8075797480a9bb660c927b666ca0301cdffa622e7c6b9c583bd2b45c781a",
+  "publisherId": "0x8ef82376b4409969ebe3889af2d5cb3588b10426bf35152d47a0a18a91ef37d6",
+  "subNamesPackageId": "0xeaa8d89e19d6f346f7a515bb3cf63fd9b7b456e77a0073a13103bdfbdd8d1980",
+  "tempSubdomainsProxyPackageId": "0x11e01b25113cf141676d2f0b97068adbd2c98dd15ce1f52bd21c595faf63ec55",
   "coins": {
     "IOTA": {
       "type": "0x0000000000000000000000000000000000000000000000000000000000000002::iota::IOTA",
       "metadataId": "0xf7ceb0424ca93f77858c74aebda8bcd5ffe0f32b82ebcc38afb3ba643d03a5f8"
     }
   },
-  "registryTableId": "0x38c633815b6819b96a11b0887148e278778e3db92e271c9fa24673e22cd3b1ab"
-}
+  "registryTableId": "0xd5e98aa3e79cff0cd5146dc4d7dea863eaffcce06703e47473f88214c4746501"
+
