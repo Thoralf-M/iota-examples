@@ -4,15 +4,31 @@ IOTA_NAMES_PACKAGE_ID=0xa1d2ed2008d31d358cfaf61a89aa7cfaa78ed183dbe683620258e98c
 IOTA_NAMES_OBJECT_ID=0xbf3563622035af599057c46f4b871e0a9817c7bab759354532402be6d9538ba3
 PAYMENTS_PACKAGE_ID=0xb06b8075797480a9bb660c927b666ca0301cdffa622e7c6b9c583bd2b45c781a
 ADMIN_CAP=0xc67f174b790cbec683538b0a8ebee44a1ae6e4fec4ab8d34a59d896d843bb119
-# price for 3 chars: 1000000000
-# price for 4 chars: 500000000
-# price for 5+ chars: 100000000
-DOMAIN_NAME='"name.iota"'
+
+
+DOMAIN_NAME=name.iota
+first_part="${DOMAIN_NAME%%.*}"      # Extract the part before the dot (name)
+LENGTH=${#first_part}
+DOMAIN_NAME_STRING="\"$DOMAIN_NAME\""
+
+# compute price
+LENGTH=${#first_part}
+inspect_output=$(iota client ptb \
+--move-call $IOTA_NAMES_PACKAGE_ID::iota_names::get_config "<$IOTA_NAMES_PACKAGE_ID::pricing_config::PricingConfig>" @$IOTA_NAMES_OBJECT_ID \
+--assign config \
+--move-call $IOTA_NAMES_PACKAGE_ID::pricing_config::calculate_base_price config $LENGTH \
+--dev-inspect)
+# echo $inspect_output
+bytes=($(echo "$inspect_output" | grep -o 'Bytes: \[.*\]' | tail -n 1 | sed -E 's/[^0-9,]//g' | tr ',' '\n'))
+HEX_VALUES=$(echo $bytes | tr ' ' '\n' | xargs -I {} printf "\\\\x%02x" {})
+PRICE=$(echo -n -e $HEX_VALUES | od -An -t u8 | tr -d ' ')
+echo $PRICE
+
 TARGET_ADDRESS=$(iota client active-address)
 iota client ptb \
---split-coins gas "[500000000]" \
+--split-coins gas "[$PRICE]" \
 --assign coins \
---move-call $IOTA_NAMES_PACKAGE_ID::payment::init_registration @$IOTA_NAMES_OBJECT_ID $DOMAIN_NAME \
+--move-call $IOTA_NAMES_PACKAGE_ID::payment::init_registration @$IOTA_NAMES_OBJECT_ID $DOMAIN_NAME_STRING \
 --assign payment_intent \
 --move-call $PAYMENTS_PACKAGE_ID::payments::handle_base_payment "<0x0000000000000000000000000000000000000000000000000000000000000002::iota::IOTA>" @$IOTA_NAMES_OBJECT_ID payment_intent coins.0 \
 --assign receipt \
@@ -21,19 +37,6 @@ iota client ptb \
 --move-call $IOTA_NAMES_PACKAGE_ID::controller::set_target_address @$IOTA_NAMES_OBJECT_ID res "some(@$TARGET_ADDRESS)" @0x6 \
 --transfer-objects "[res]" @$TARGET_ADDRESS \
 --dry-run
-
-# compute price
-DOMAIN_NAME_WITHOUT_TLD="iota"
-LENGTH=${#DOMAIN_NAME_WITHOUT_TLD}
-inspect_output=$(iota client ptb \
---move-call $IOTA_NAMES_PACKAGE_ID::iota_names::get_config "<$IOTA_NAMES_PACKAGE_ID::pricing_config::PricingConfig>" @$IOTA_NAMES_OBJECT_ID \
---assign config \
---move-call $IOTA_NAMES_PACKAGE_ID::pricing_config::calculate_base_price config $LENGTH \
---dev-inspect)
-echo $inspect_output
-bytes=($(echo "$inspect_output" | grep -o 'Bytes: \[.*\]' | tail -n 1 | sed -E 's/[^0-9,]//g' | tr ',' '\n'))
-HEX_VALUES=$(echo $bytes | tr ' ' '\n' | xargs -I {} printf "\\\\x%02x" {})
-echo -n -e $HEX_VALUES | od -An -t u8 | tr -d ' '
 
 # convert the result bytes in JS
 const bytes = new Uint8Array([0, 148, 53, 119, 0, 0, 0, 0]);
@@ -81,7 +84,7 @@ iota client ptb \
 --dev-inspect
 
 # resolve name (reverse lookup/reverse resolution)
-ADDRESS=0xee68634fb93502ec391e78ccc94568e9e179ef8ec37fe12daaac4d2c2af32d5c
+ADDRESS=0x689dae2f77b048dcc08e14d73104ea14222b5be14cc31f34a16a1221f944c1e3
 iota client ptb \
 --move-call $IOTA_NAMES_PACKAGE_ID::iota_names::registry "<$IOTA_NAMES_PACKAGE_ID::registry::Registry>" @$IOTA_NAMES_OBJECT_ID \
 --assign iota_names \
@@ -94,7 +97,7 @@ iota client ptb \
 --dev-inspect
 
 # resolve name (reverse lookup/reverse resolution) and print as utf-8
-ADDRESS=0xee68634fb93502ec391e78ccc94568e9e179ef8ec37fe12daaac4d2c2af32d5c
+ADDRESS=0x689dae2f77b048dcc08e14d73104ea14222b5be14cc31f34a16a1221f944c1e3
 inspect_output=$(iota client ptb \
 --move-call $IOTA_NAMES_PACKAGE_ID::iota_names::registry "<$IOTA_NAMES_PACKAGE_ID::registry::Registry>" @$IOTA_NAMES_OBJECT_ID \
 --assign iota_names \
