@@ -1,0 +1,52 @@
+# Prepare transaction
+curl https://api.testnet.iota.cafe  \
+--header 'content-type: application/json' \
+--data '{
+    "jsonrpc": "2.0",
+    "id": 1,
+    "method": "unsafe_payIota",
+    "params": {
+        "signer": "0x111111111504e9350e635d65cd38ccd2c029434c6a3a480d8947a9ba6a15b215",
+        "input_coins": ["0x0031cf44d9b568dbd93302d23fa064b13b42e0c3f741783229702f85584d1ee0"],
+        "recipients": ["0x111111111504e9350e635d65cd38ccd2c029434c6a3a480d8947a9ba6a15b215", "0x111111111504e9350e635d65cd38ccd2c029434c6a3a480d8947a9ba6a15b215"],
+        "amounts": ["100", "200"],
+        "gas_budget": "100000000"
+    }
+}' | jq .
+
+# Dry run transaction
+curl https://api.testnet.iota.cafe  \
+--header 'content-type: application/json' \
+--data '{
+    "jsonrpc": "2.0",
+    "id": 1,
+    "method": "iota_dryRunTransactionBlock",
+    "params": {
+        "tx_bytes": "AAADAAhkAAAAAAAAAAAIyAAAAAAAAAAAIBEREREVBOk1DmNdZc04zNLAKUNMajpIDYlHqbpqFbIVAgIAAgEAAAEBAAECAwAAAAADAAABAAECABEREREVBOk1DmNdZc04zNLAKUNMajpIDYlHqbpqFbIVAQAxz0TZtWjb2TMC0j+gZLE7QuDD90F4MilwL4VYTR7gR9SxDAAAAAAgzFKhcPCs0Q1NZdxjuD9IQkOw7Ov6aJrzzN37AA6RUUQRERERFQTpNQ5jXWXNOMzSwClDTGo6SA2JR6m6ahWyFegDAAAAAAAAAOH1BQAAAAAA"
+    }
+}' | jq .
+
+# Sign transaction
+iota keytool sign --address 0x111111111504e9350e635d65cd38ccd2c029434c6a3a480d8947a9ba6a15b215 --data AAADAAhkAAAAAAAAAAAIyAAAAAAAAAAAIBEREREVBOk1DmNdZc04zNLAKUNMajpIDYlHqbpqFbIVAgIAAgEAAAEBAAECAwAAAAADAAABAAECABEREREVBOk1DmNdZc04zNLAKUNMajpIDYlHqbpqFbIVAQAxz0TZtWjb2TMC0j+gZLE7QuDD90F4MilwL4VYTR7gR9SxDAAAAAAgzFKhcPCs0Q1NZdxjuD9IQkOw7Ov6aJrzzN37AA6RUUQRERERFQTpNQ5jXWXNOMzSwClDTGo6SA2JR6m6ahWyFegDAAAAAAAAAOH1BQAAAAAA
+
+# Execute transaction
+curl https://api.testnet.iota.cafe  \
+--header 'content-type: application/json' \
+--data '{
+    "jsonrpc": "2.0",
+    "id": 1,
+    "method": "iota_executeTransactionBlock",
+    "params": {
+        "tx_bytes": "AAADAAhkAAAAAAAAAAAIyAAAAAAAAAAAIBEREREVBOk1DmNdZc04zNLAKUNMajpIDYlHqbpqFbIVAgIAAgEAAAEBAAECAwAAAAADAAABAAECABEREREVBOk1DmNdZc04zNLAKUNMajpIDYlHqbpqFbIVAQAxz0TZtWjb2TMC0j+gZLE7QuDD90F4MilwL4VYTR7gR9SxDAAAAAAgzFKhcPCs0Q1NZdxjuD9IQkOw7Ov6aJrzzN37AA6RUUQRERERFQTpNQ5jXWXNOMzSwClDTGo6SA2JR6m6ahWyFegDAAAAAAAAAOH1BQAAAAAA",
+        "signatures": ["AP5bD1noWq2hH8ABsuWpSYIidCckBPxkHfApNKS08jvhr2cUJFO4kToefvq74ktJXhycOf7dYxBvrug/tpI5wgcoe8lptdiMUw3h3rcxQJf3bWp9zFLP4Eq3rpQOam52cw=="],
+        "options": {
+            "showBalanceChanges": true,
+            "showEffects": true,
+            "showEvents": true,
+            "showInput": true,
+            "showObjectChanges": true,
+            "showRawEffects": false,
+            "showRawInput": true
+        }
+    }
+}' | jq .
