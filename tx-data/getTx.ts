@@ -9,7 +9,7 @@ const client = new IotaClient({
 
 (async () => {
     const txBlock = await client.getTransactionBlock({
-        digest: "HrVc47TmtYzBhFtKDxReojvFjjgbPXWSrH19d4ERCHcD",
+        digest: "6uo67WYPZWMGc5PqSntxrU7LZSwpxBH5hVn8HWdw7jqK",
         options: {
             // showObjectChanges: true,
             showRawEffects: true,
