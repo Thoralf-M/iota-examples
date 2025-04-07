@@ -3,7 +3,7 @@
 IOTA_NAMES_PACKAGE_ID=0xa1d2ed2008d31d358cfaf61a89aa7cfaa78ed183dbe683620258e98c59f48b13
 IOTA_NAMES_OBJECT_ID=0xbf3563622035af599057c46f4b871e0a9817c7bab759354532402be6d9538ba3
 PAYMENTS_PACKAGE_ID=0xb06b8075797480a9bb660c927b666ca0301cdffa622e7c6b9c583bd2b45c781a
-ADMIN_CAP=0xc67f174b790cbec683538b0a8ebee44a1ae6e4fec4ab8d34a59d896d843bb119
+ADMIN_CAP=0x3014281d985cf1e2f640884d905c6c81aeb5951d14482e701428d4e611404a68
 
 
 DOMAIN_NAME=name.iota
@@ -132,6 +132,29 @@ iota client ptb \
 --move-call $IOTA_NAMES_PACKAGE_ID::registry::set_data registry domain data_vec_map \
 --gas-budget 50000000
 
+# update pricing config
+iota client ptb \
+  --make-move-vec "<u64>" "[3, 3]" \
+  --assign range3_values \
+  --move-call $IOTA_NAMES_PACKAGE_ID::pricing_config::new_range range3_values \
+  --assign range3 \
+  --make-move-vec "<u64>" "[4, 4]" \
+  --assign range4_values \
+  --move-call $IOTA_NAMES_PACKAGE_ID::pricing_config::new_range range4_values \
+  --assign range4 \
+  --make-move-vec "<u64>" "[5, 63]" \
+  --assign range5_values \
+  --move-call $IOTA_NAMES_PACKAGE_ID::pricing_config::new_range range5_values \
+  --assign range5 \
+  --make-move-vec "<$IOTA_NAMES_PACKAGE_ID::pricing_config::Range>" "[range3, range4, range5]" \
+  --assign ranges \
+  --make-move-vec "<u64>" "[1_000_000, 500_000, 100_000]" \
+  --assign prices \
+  --move-call $IOTA_NAMES_PACKAGE_ID::pricing_config::new ranges prices \
+  --assign pricing_config \
+  --move-call $IOTA_NAMES_PACKAGE_ID::iota_names::remove_config "<$IOTA_NAMES_PACKAGE_ID::pricing_config::PricingConfig>" @$ADMIN_CAP @$IOTA_NAMES_OBJECT_ID \
+  --move-call $IOTA_NAMES_PACKAGE_ID::iota_names::add_config "<$IOTA_NAMES_PACKAGE_ID::pricing_config::PricingConfig>" @$ADMIN_CAP @$IOTA_NAMES_OBJECT_ID pricing_config \
+  --dry-run
 
 # packages init output
 {
