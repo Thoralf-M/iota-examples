@@ -3,7 +3,7 @@ import { Ed25519Keypair } from '@iota/iota-sdk/keypairs/ed25519';
 import { TransactionBlock } from '@iota/iota-sdk/transactions';
 
 const client = new IotaClient({
-    url: 'https://api.iota-rebased-alphanet.iota.cafe',
+    url: 'https://api.testnet.iota.cafe',
 });
 
 const testMnemonic = 'remove vessel lens oak junk view cancel say fatal hotel swamp cool true mean basic year shoe chat obey ozone hand blade toe good'

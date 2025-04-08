@@ -3,11 +3,11 @@ import { WebSocket } from 'ws';
 
 const client = new IotaClient({
     transport: new IotaHTTPTransport({
-        url: 'https://api.iota-rebased-alphanet.iota.cafe',
+        url: 'https://api.testnet.iota.cafe',
         // @ts-ignore
         WebSocketConstructor: WebSocket,
         websocket: {
-            url: 'wss://api.iota-rebased-alphanet.iota.cafe/websocket'
+            url: 'wss://api.testnet.iota.cafe'
         }
     }),
 });

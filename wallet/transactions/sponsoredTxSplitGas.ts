@@ -14,7 +14,7 @@ console.log("senderAddress: " + senderAddress);
 (async () => {
     /// Request funds from faucet if needed
     const client = new IotaClient({
-        url: 'https://api.iota-rebased-alphanet.iota.cafe',
+        url: 'https://api.testnet.iota.cafe',
     });
     await requestFundsIfNeeded(client, senderAddress)
 

@@ -3,7 +3,7 @@ import { WebSocket } from 'ws';
 
 const client = new IotaClient({
     transport: new IotaHTTPTransport({
-        url: 'https://api.iota-rebased-alphanet.iota.cafe',
+        url: 'https://api.testnet.iota.cafe',
         // The typescript definitions may not match perfectly, casting to never avoids these minor incompatibilities
         // @ts-ignore
         WebSocketConstructor: WebSocket,
