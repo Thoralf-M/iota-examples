@@ -24,7 +24,3 @@ Node JSON RPC: https://api.iota-rebased-alphanet.iota.cafe
 Faucet URL: https://faucet.iota-rebased-alphanet.iota.cafe/gas
 Explorer: https://explorer.rebased.iota.org/?network=alphanet
 GraphQL: https://graphql.iota-rebased-alphanet.iota.cafe
-
-# Local network with indexer
-cd docker/pg-services-local && compose up postgres -d
-cd ../../crates/iota-test-validator && RUST_LOG="consensus=off" cargo run -- --with-indexer

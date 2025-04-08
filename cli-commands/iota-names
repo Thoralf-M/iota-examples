@@ -5,7 +5,6 @@ IOTA_NAMES_OBJECT_ID=0xbf3563622035af599057c46f4b871e0a9817c7bab759354532402be6d
 PAYMENTS_PACKAGE_ID=0xb06b8075797480a9bb660c927b666ca0301cdffa622e7c6b9c583bd2b45c781a
 ADMIN_CAP=0x3014281d985cf1e2f640884d905c6c81aeb5951d14482e701428d4e611404a68
 
-
 DOMAIN_NAME=name.iota
 first_part="${DOMAIN_NAME%%.*}"      # Extract the part before the dot (name)
 LENGTH=${#first_part}
@@ -174,4 +173,4 @@ iota client ptb \
     }
   },
   "registryTableId": "0xd5e98aa3e79cff0cd5146dc4d7dea863eaffcce06703e47473f88214c4746501"
-
+}
