@@ -65,6 +65,19 @@ iota client ptb \
 --move-call $IOTA_NAMES_PACKAGE_ID::iota_names::authorize_app "<$IOTA_NAMES_PACKAGE_ID::admin::Admin>" @$ADMIN_CAP @$IOTA_NAMES_OBJECT_ID \
 --dry-run
 
+# authorize payments app 
+IOTA_NAMES_PACKAGE_ID=0xa1d2ed2008d31d358cfaf61a89aa7cfaa78ed183dbe683620258e98c59f48b13
+IOTA_NAMES_OBJECT_ID=0xbf3563622035af599057c46f4b871e0a9817c7bab759354532402be6d9538ba3
+ADMIN_CAP=0x3014281d985cf1e2f640884d905c6c81aeb5951d14482e701428d4e611404a68
+PAYMENTS_PACKAGE_ID=0xb06b8075797480a9bb660c927b666ca0301cdffa622e7c6b9c583bd2b45c781a
+iota client ptb \
+--move-call $IOTA_NAMES_PACKAGE_ID::iota_names::authorize_app "<$PAYMENTS_PACKAGE_ID::payments::PaymentsApp>" @$ADMIN_CAP @$IOTA_NAMES_OBJECT_ID \
+--dry-run
+# deauthorize payments app
+iota client ptb \
+--move-call $IOTA_NAMES_PACKAGE_ID::iota_names::deauthorize_app "<$PAYMENTS_PACKAGE_ID::payments::PaymentsApp>" @$ADMIN_CAP @$IOTA_NAMES_OBJECT_ID \
+--dry-run
+
 # resolve address
 DOMAIN_NAME='"name.iota"'
 iota client ptb \
