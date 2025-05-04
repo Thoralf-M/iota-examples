@@ -7,15 +7,7 @@ import { IotaClient } from '@iota/iota-sdk/client';
     const objectId = '0x0031cf44d9b568dbd93302d23fa064b13b42e0c3f741783229702f85584d1ee0';
     const object = await client.getObject({ id: objectId, options: { showPreviousTransaction: true } });
 
-    // Use tryGetPastObject
-    let previousObject = await client.tryGetPastObject({
-        id: objectId,
-        version: parseInt(object.data?.version!),
-        options: { showPreviousTransaction: true }
-    })
-    console.log(previousObject)
-
-    // Manually get the previous version of the object
+    // Manually get the previous version of the object as tryGetObjectBeforeVersion is not part of the TS SDK: https://github.com/iotaledger/iota/issues/6266
     const txBlock = await client.getTransactionBlock({
         digest: object.data?.previousTransaction!,
         options: {
@@ -40,5 +32,12 @@ import { IotaClient } from '@iota/iota-sdk/client';
         }
     }
     console.log('Previous version:', previousVersion);
+
+    let previousObject = await client.tryGetPastObject({
+        id: objectId,
+        version: parseInt(previousVersion),
+        options: { showContent: true, showPreviousTransaction: true }
+    })
+    console.log(previousObject)
 
 })()
