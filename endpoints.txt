@@ -4,6 +4,12 @@ Indexer: http://0.0.0.0:9124
 Faucet http://127.0.0.1:9123/gas
 GraphQL: http://127.0.0.1:8000
 
+mainnet
+JSON-RPC: https://api.mainnet.iota.cafe
+Websocket: wss://api.mainnet.iota.cafe
+Indexer: https://indexer.mainnet.iota.cafe
+GraphQL: https://graphql.mainnet.iota.cafe
+
 testnet
 JSON-RPC: https://api.testnet.iota.cafe
 Websocket: wss://api.testnet.iota.cafe
@@ -26,6 +32,7 @@ Explorer: https://explorer.rebased.iota.org/?network=alphanet
 GraphQL: https://graphql.iota-rebased-alphanet.iota.cafe
 
 iota client new-env --alias localnet --rpc http://127.0.0.1:9000 --graphql http://127.0.0.1:8000
+iota client new-env --alias mainnet --rpc https://api.mainnet.iota.cafe --graphql https://graphql.mainnet.iota.cafe
 iota client new-env --alias testnet --rpc https://api.testnet.iota.cafe --graphql https://graphql.testnet.iota.cafe
 iota client new-env --alias devnet --rpc https://api.devnet.iota.cafe --graphql https://graphql.devnet.iota.cafe
 iota client new-env --alias alphanet --rpc https://api.iota-rebased-alphanet.iota.cafe --graphql https://graphql.iota-rebased-alphanet.iota.cafe --faucet https://faucet.iota-rebased-alphanet.iota.cafe/gas
