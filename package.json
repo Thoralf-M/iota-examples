@@ -12,8 +12,8 @@
     "@types/ws": "^8.5.14"
   },
   "dependencies": {
-    "@iota/bcs": "^0.2.1",
-    "@iota/iota-sdk": "^0.5.0",
+    "@iota/bcs": "^1.0.0",
+    "@iota/iota-sdk": "^1.0.0",
     "axios": "^1.7.9",
     "bech32": "^2.0.0",
     "ed25519": "link:@iota/iota-sdk/keypairs/ed25519",
