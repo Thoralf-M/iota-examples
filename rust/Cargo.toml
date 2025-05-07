@@ -11,6 +11,7 @@ iota-types = { git = "https://github.com/iotaledger/iota", package = "iota-types
 iota-json-rpc-types = { git = "https://github.com/iotaledger/iota", package = "iota-json-rpc-types", tag = "v1.0.0" }
 shared-crypto = { git = "https://github.com/iotaledger/iota", package = "shared-crypto", tag = "v1.0.0" }
 anyhow = "1.0"
+base64 = "0.22.1"
 bcs = "0.1.4"
 futures = "0.3.28"
 reqwest = { version = "0.12", default-features = false, features = [
