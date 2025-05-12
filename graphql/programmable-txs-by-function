@@ -1,0 +1,16 @@
+{
+  transactionBlocks(filter: {function: "0x84cf5d12de2f9731a89bb519bc0c982a941b319a33abefdd5ed2054ad931de08::identity::new"}) {
+    nodes {
+      digest
+    }
+    pageInfo {
+      startCursor
+      endCursor
+    }
+  }
+}
+
+curl -i -X POST https://graphql.mainnet.iota.cafe \
+  --header 'x-iota-rpc-show-usage: true' \
+  --header 'Content-Type: application/json' \
+  --data '{"query":"query { transactionBlocks(filter: {function: \"0x84cf5d12de2f9731a89bb519bc0c982a941b319a33abefdd5ed2054ad931de08::identity::new\"}) { nodes { digest } pageInfo { startCursor endCursor } } }"}'

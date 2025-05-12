@@ -13,4 +13,4 @@
 curl -i -X POST https://graphql.testnet.iota.cafe \
   --header 'x-iota-rpc-show-usage: true' \
   --header 'Content-Type: application/json' \
-  --data '{"query":"query Func { transactionBlocks(filter: {afterCheckpoint: 0, kind: PROGRAMMABLE_TX}) { nodes { digest } pageInfo { startCursor endCursor } } }"}'
+  --data '{"query":"query Func { transactionBlocks(filter: {afterCheckpoint: 0, kind: \"PROGRAMMABLE_TX\"}) { nodes { digest } pageInfo { startCursor endCursor } } }"}'
