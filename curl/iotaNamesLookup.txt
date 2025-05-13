@@ -1,0 +1,9 @@
+
+curl --location --request POST 'https://indexer.devnet.iota.cafe' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+ "jsonrpc": "2.0",
+ "id": 1,
+ "method": "iotax_iotaNamesLookup",
+ "params":["name.iota"] 
+}'
