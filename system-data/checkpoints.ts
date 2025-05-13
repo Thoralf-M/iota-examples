@@ -5,13 +5,13 @@ const client = new IotaClient({
 });
 
 (async () => {
-    const latestCheckpoint = await client.getLatestCheckpointSequenceNumber()
-    console.log("Latest checkpoint number: " + latestCheckpoint)
+    const latestCheckpoint = await client.getLatestCheckpointSequenceNumber();
+    console.log('Latest checkpoint number: ' + latestCheckpoint);
 
     const checkpoint = await client.getCheckpoint({ id: latestCheckpoint });
-    console.log(checkpoint)
+    console.log(checkpoint);
 
     // Get the latest 2 checkpoints
     const checkpoints = await client.getCheckpoints({ limit: 2, descendingOrder: true });
     console.log(JSON.stringify(checkpoints, null, 2));
-})()
+})();

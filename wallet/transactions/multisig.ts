@@ -1,11 +1,12 @@
 import { IotaClient } from '@iota/iota-sdk/client';
+import { requestIotaFromFaucetV0 } from '@iota/iota-sdk/faucet';
 import { Ed25519Keypair } from '@iota/iota-sdk/keypairs/ed25519';
 import { MultiSigPublicKey } from '@iota/iota-sdk/multisig';
 import { Transaction } from '@iota/iota-sdk/transactions';
-import { requestIotaFromFaucetV0 } from '@iota/iota-sdk/faucet';
 
 /// Multisig address generation
-const testMnemonic = 'remove vessel lens oak junk view cancel say fatal hotel swamp cool true mean basic year shoe chat obey ozone hand blade toe good'
+const testMnemonic =
+    'remove vessel lens oak junk view cancel say fatal hotel swamp cool true mean basic year shoe chat obey ozone hand blade toe good';
 const keypair0 = Ed25519Keypair.deriveKeypair(testMnemonic, `m/44'/4218'/0'/0'/0'`);
 const pubKey0 = keypair0.getPublicKey();
 const keypair1 = Ed25519Keypair.deriveKeypair(testMnemonic, `m/44'/4218'/0'/0'/1'`);
@@ -32,20 +33,26 @@ const multiSigPublicKey = MultiSigPublicKey.fromPublicKeys({
 });
 
 const multisigAddress = multiSigPublicKey.toIotaAddress();
-console.log("multisigAddress: " + multisigAddress);
-
+console.log('multisigAddress: ' + multisigAddress);
 
 (async () => {
     const client = new IotaClient({
         url: 'https://api.testnet.iota.cafe',
     });
 
-    await requestFundsIfNeeded(client, multisigAddress)
+    await requestFundsIfNeeded(client, multisigAddress);
 
     /// Transaction creation
     const transfers = [
-        { address: '0x111111111504e9350e635d65cd38ccd2c029434c6a3a480d8947a9ba6a15b215', amount: 1_000_000 },
-        { address: '0x111111111504e9350e635d65cd38ccd2c029434c6a3a480d8947a9ba6a15b215', amount: 1_000_000 }];
+        {
+            address: '0x111111111504e9350e635d65cd38ccd2c029434c6a3a480d8947a9ba6a15b215',
+            amount: 1_000_000,
+        },
+        {
+            address: '0x111111111504e9350e635d65cd38ccd2c029434c6a3a480d8947a9ba6a15b215',
+            amount: 1_000_000,
+        },
+    ];
 
     const txb = new Transaction();
 
@@ -66,16 +73,20 @@ console.log("multisigAddress: " + multisigAddress);
     const signature0 = (await keypair0.signTransaction(transactionBytes)).signature;
     const signature1 = (await keypair1.signTransaction(transactionBytes)).signature;
     const signature2 = (await keypair2.signTransaction(transactionBytes)).signature;
-    const signature = multiSigPublicKey.combinePartialSignatures([signature0, signature1, signature2]);
+    const signature = multiSigPublicKey.combinePartialSignatures([
+        signature0,
+        signature1,
+        signature2,
+    ]);
 
     const txResponse = await client.executeTransactionBlock({
         transactionBlock: transactionBytes,
         signature: signature,
         options: { showEffects: true },
     });
-    console.log(txResponse)
-    console.log("https://explorer.rebased.iota.org/txblock/" + txResponse.digest)
-})()
+    console.log(txResponse);
+    console.log('https://explorer.rebased.iota.org/txblock/' + txResponse.digest);
+})();
 
 async function requestFundsIfNeeded(client: IotaClient, address: string) {
     const coinBalance = await client.getBalance({
@@ -86,8 +97,8 @@ async function requestFundsIfNeeded(client: IotaClient, address: string) {
             host: 'https://faucet.iota-rebased-alphanet.iota.cafe/gas',
             recipient: address,
         });
-        console.log(faucetResponse)
+        console.log(faucetResponse);
         // Wait some time for the indexer to process the tx
-        await new Promise(r => setTimeout(r, 3000));
+        await new Promise((r) => setTimeout(r, 3000));
     }
 }

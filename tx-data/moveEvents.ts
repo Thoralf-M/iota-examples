@@ -8,8 +8,8 @@ const client = new IotaClient({
         // @ts-ignore
         WebSocketConstructor: WebSocket,
         websocket: {
-            url: 'wss://api.iota-rebased-alphanet.iota.cafe/websocket'
-        }
+            url: 'wss://api.iota-rebased-alphanet.iota.cafe/websocket',
+        },
     }),
 });
 
@@ -21,7 +21,7 @@ const client = new IotaClient({
         },
         onMessage(event) {
             // handle subscription notification message here. This function is called once per subscription message.
-            console.log(event)
+            console.log(event);
             /// Example output:
             // {
             //     id: {
@@ -47,4 +47,4 @@ const client = new IotaClient({
 
     // later, to unsubscribe
     // await unsubscribe();
-})()
+})();

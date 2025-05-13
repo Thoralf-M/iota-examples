@@ -5,12 +5,14 @@ const client = new IotaClient({
 });
 
 (async () => {
-    let coins = await getAllIotaCoins(client, '0x111111111504e9350e635d65cd38ccd2c029434c6a3a480d8947a9ba6a15b215');
+    let coins = await getAllIotaCoins(
+        client,
+        '0x111111111504e9350e635d65cd38ccd2c029434c6a3a480d8947a9ba6a15b215',
+    );
 
     // console.log(JSON.stringify(coins, null, 2));
-    console.log("Coin objects: " + coins.length)
-})()
-
+    console.log('Coin objects: ' + coins.length);
+})();
 
 async function getAllIotaCoins(client: IotaClient, address: string): Promise<CoinStruct[]> {
     let cursor: string | undefined | null = null;
@@ -27,7 +29,7 @@ async function getAllIotaCoins(client: IotaClient, address: string): Promise<Coi
 
         coins.push(...data);
         cursor = nextCursor;
-        console.log("Current fetched coin objects: " + coins.length)
+        console.log('Current fetched coin objects: ' + coins.length);
     } while (cursor);
-    return coins
+    return coins;
 }

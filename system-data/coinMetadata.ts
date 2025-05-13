@@ -7,5 +7,5 @@ const client = new IotaClient({
 });
 
 (async () => {
-    console.log(await client.getCoinMetadata({ coinType: "0x2::iota::IOTA" }))
-})()
+    console.log(await client.getCoinMetadata({ coinType: '0x2::iota::IOTA' }));
+})();

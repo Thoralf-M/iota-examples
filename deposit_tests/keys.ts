@@ -13,11 +13,11 @@ interface KeysAndAddresses {
 export function getKeysAndAddresses(testMnemonic: string): KeysAndAddresses {
     const senderKeypair = Ed25519Keypair.deriveKeypair(testMnemonic, `m/44'/4218'/0'/0'/0'`);
     const senderPublicKey = senderKeypair.getPublicKey();
-    const senderAddress = senderPublicKey.toIotaAddress()
+    const senderAddress = senderPublicKey.toIotaAddress();
 
     const sponsorKeypair = Ed25519Keypair.deriveKeypair(testMnemonic, `m/44'/4218'/0'/0'/1'`);
     const sponsorPublicKey = sponsorKeypair.getPublicKey();
-    const sponsorAddress = sponsorPublicKey.toIotaAddress()
+    const sponsorAddress = sponsorPublicKey.toIotaAddress();
 
     const multiSigPublicKey = MultiSigPublicKey.fromPublicKeys({
         threshold: 2,
@@ -29,7 +29,7 @@ export function getKeysAndAddresses(testMnemonic: string): KeysAndAddresses {
             {
                 publicKey: sponsorPublicKey,
                 weight: 1,
-            }
+            },
         ],
     });
 

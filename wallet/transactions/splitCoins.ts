@@ -6,29 +6,27 @@ const client = new IotaClient({
     url: 'https://api.hackanet.iota.cafe',
 });
 
-const testMnemonic = 'remove vessel lens oak junk view cancel say fatal hotel swamp cool true mean basic year shoe chat obey ozone hand blade toe good'
+const testMnemonic =
+    'remove vessel lens oak junk view cancel say fatal hotel swamp cool true mean basic year shoe chat obey ozone hand blade toe good';
 const keypair = Ed25519Keypair.deriveKeypair(testMnemonic, `m/44'/4218'/0'/0'/0'`);
 const address = keypair.getPublicKey().toIotaAddress();
-console.log("Sender address: " + address)
+console.log('Sender address: ' + address);
 
 const tx = new Transaction();
 
 for (let i = 0; i < 4; i++) {
     // Just create 500 empty coin objects (max args is 512)
-    const splitAmounts = new Array(500).fill(0)
-    const coins = tx.splitCoins(
-        tx.gas,
-        splitAmounts,
-    );
+    const splitAmounts = new Array(500).fill(0);
+    const coins = tx.splitCoins(tx.gas, splitAmounts);
     let coinArgs = [...Array(splitAmounts.length).keys()].map((i) => {
-        return { kind: 'NestedResult', NestedResult: [coins[0].NestedResult[0], i] }
-    })
+        return { kind: 'NestedResult', NestedResult: [coins[0].NestedResult[0], i] };
+    });
     // @ts-ignore
     tx.transferObjects(coinArgs, address);
 }
 
 (async () => {
     const txResponse = await client.signAndExecuteTransaction({ signer: keypair, transaction: tx });
-    console.log(txResponse)
-    console.log("https://explorer.rebased.iota.org/txblock/" + txResponse.digest)
-})()
+    console.log(txResponse);
+    console.log('https://explorer.rebased.iota.org/txblock/' + txResponse.digest);
+})();

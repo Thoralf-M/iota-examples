@@ -8,5 +8,5 @@ const client = new IotaClient({
 
 (async () => {
     const systemState = await client.getLatestIotaSystemState();
-    console.log(systemState)
-})()
+    console.log(systemState);
+})();

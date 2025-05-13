@@ -7,13 +7,13 @@ const client = new IotaClient({
 });
 
 (async () => {
-    const currentEpochInfo = await client.getCurrentEpoch()
-    console.log(currentEpochInfo)
+    const currentEpochInfo = await client.getCurrentEpoch();
+    console.log(currentEpochInfo);
 
     const committeeInfo = await client.getCommitteeInfo({ epoch: currentEpochInfo.epoch });
-    console.log(committeeInfo)
+    console.log(committeeInfo);
 
     // Manually call an endpoint
     // const committeeInfo_ = await client.call('iotax_getCommitteeInfo', [(currentEpochInfo.epoch - 1).toString()]);
     // console.log(committeeInfo_)
-})()
+})();

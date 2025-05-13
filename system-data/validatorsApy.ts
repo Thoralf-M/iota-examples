@@ -5,6 +5,6 @@ const client = new IotaClient({
 });
 
 (async () => {
-    const validatorsApy = await client.getValidatorsApy()
-    console.log(validatorsApy)
-})()
+    const validatorsApy = await client.getValidatorsApy();
+    console.log(validatorsApy);
+})();

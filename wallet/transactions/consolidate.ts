@@ -6,26 +6,27 @@ const client = new IotaClient({
     url: 'https://api.hackanet.iota.cafe',
 });
 
-const testMnemonic = 'remove vessel lens oak junk view cancel say fatal hotel swamp cool true mean basic year shoe chat obey ozone hand blade toe good'
+const testMnemonic =
+    'remove vessel lens oak junk view cancel say fatal hotel swamp cool true mean basic year shoe chat obey ozone hand blade toe good';
 const keypair = Ed25519Keypair.deriveKeypair(testMnemonic, `m/44'/4218'/0'/0'/0'`);
 const address = keypair.getPublicKey().toIotaAddress();
-console.log("Sender address: " + address);
+console.log('Sender address: ' + address);
 
 (async () => {
-    let coins = await getAllIotaCoins(client, address)
+    let coins = await getAllIotaCoins(client, address);
     if (coins.length < 2) {
-        console.log("No coins to consolidate")
-        return
+        console.log('No coins to consolidate');
+        return;
     }
 
     console.log(`Available coins: ${coins.length}`);
 
-    let position = coins.findIndex(c => parseInt(c.balance) > 500_000)
+    let position = coins.findIndex((c) => parseInt(c.balance) > 500_000);
     let [gasCoinObject] = coins.splice(position, 1);
 
     let coinObjectIds = coins.slice(0, 1676).map((coin) => {
         return coin.coinObjectId;
-    })
+    });
     console.log(`Consolidating ${coinObjectIds.length + 1} coins`);
 
     const tx = new Transaction();
@@ -35,14 +36,18 @@ console.log("Sender address: " + address);
         // For many coin objects (> 512) one needs to call mergeCoins() multiple times with a max of 1676 inputs in a single PTB.
         tx.mergeCoins(tx.gas, coinObjectIdsChunk);
     }
-    tx.setGasPayment([{ objectId: gasCoinObject.coinObjectId, version: gasCoinObject.version, digest: gasCoinObject.digest }])
+    tx.setGasPayment([
+        {
+            objectId: gasCoinObject.coinObjectId,
+            version: gasCoinObject.version,
+            digest: gasCoinObject.digest,
+        },
+    ]);
 
     const txResponse = await client.signAndExecuteTransaction({ signer: keypair, transaction: tx });
-    console.log(txResponse)
-    console.log("https://explorer.rebased.iota.org/txblock/" + txResponse.digest)
-})()
-
-
+    console.log(txResponse);
+    console.log('https://explorer.rebased.iota.org/txblock/' + txResponse.digest);
+})();
 
 async function getAllIotaCoins(client: IotaClient, address: string): Promise<CoinStruct[]> {
     let cursor: string | undefined | null = null;
@@ -60,5 +65,5 @@ async function getAllIotaCoins(client: IotaClient, address: string): Promise<Coi
         coins.push(...data);
         cursor = nextCursor;
     } while (cursor);
-    return coins
+    return coins;
 }

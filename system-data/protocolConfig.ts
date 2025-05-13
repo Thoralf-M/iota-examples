@@ -5,6 +5,6 @@ const client = new IotaClient({
 });
 
 (async () => {
-    const protocolConfig = await client.getProtocolConfig()
-    console.log(protocolConfig)
-})()
+    const protocolConfig = await client.getProtocolConfig();
+    console.log(protocolConfig);
+})();

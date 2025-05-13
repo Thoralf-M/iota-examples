@@ -6,6 +6,6 @@ const client = new IotaClient({
 });
 
 (async () => {
-    const chainIdentifier = await client.getChainIdentifier()
-    console.log(chainIdentifier)
-})()
+    const chainIdentifier = await client.getChainIdentifier();
+    console.log(chainIdentifier);
+})();

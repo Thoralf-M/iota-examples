@@ -6,14 +6,22 @@ const client = new IotaClient({
     url: 'https://api.testnet.iota.cafe',
 });
 
-const testMnemonic = 'remove vessel lens oak junk view cancel say fatal hotel swamp cool true mean basic year shoe chat obey ozone hand blade toe good'
+const testMnemonic =
+    'remove vessel lens oak junk view cancel say fatal hotel swamp cool true mean basic year shoe chat obey ozone hand blade toe good';
 const keypair = Ed25519Keypair.deriveKeypair(testMnemonic, `m/44'/4218'/0'/0'/0'`);
 const address = keypair.getPublicKey().toIotaAddress();
-console.log("Sender address: " + address)
+console.log('Sender address: ' + address);
 
 const transfers = [
-    { address: '0x9938c94f4118153bbed08f14ae74e2557172542f59bf0b7a306e99d5a0b0896e', amount: 1_000_000 },
-    { address: '0x9938c94f4118153bbed08f14ae74e2557172542f59bf0b7a306e99d5a0b0896e', amount: 1_000_000 }];
+    {
+        address: '0x9938c94f4118153bbed08f14ae74e2557172542f59bf0b7a306e99d5a0b0896e',
+        amount: 1_000_000,
+    },
+    {
+        address: '0x9938c94f4118153bbed08f14ae74e2557172542f59bf0b7a306e99d5a0b0896e',
+        amount: 1_000_000,
+    },
+];
 
 const txb = new Transaction();
 
@@ -29,7 +37,10 @@ transfers.forEach((transfer, index) => {
 });
 
 (async () => {
-    const txResponse = await client.signAndExecuteTransaction({ signer: keypair, transaction: txb });
-    console.log(txResponse)
-    console.log("https://explorer.rebased.iota.org/txblock/" + txResponse.digest)
-})()
+    const txResponse = await client.signAndExecuteTransaction({
+        signer: keypair,
+        transaction: txb,
+    });
+    console.log(txResponse);
+    console.log('https://explorer.rebased.iota.org/txblock/' + txResponse.digest);
+})();

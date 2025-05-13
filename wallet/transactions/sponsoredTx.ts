@@ -1,25 +1,24 @@
+import { fromB64 } from '@iota/bcs';
 import { IotaClient, IotaObjectRef } from '@iota/iota-sdk/client';
+import { requestIotaFromFaucetV1 } from '@iota/iota-sdk/faucet';
 import { Ed25519Keypair } from '@iota/iota-sdk/keypairs/ed25519';
 import { Transaction } from '@iota/iota-sdk/transactions';
-import { requestIotaFromFaucetV1 } from '@iota/iota-sdk/faucet';
-import { fromB64 } from '@iota/bcs';
 
-const testMnemonic = 'remove vessel lens oak junk view cancel say fatal hotel swamp cool true mean basic year shoe chat obey ozone hand blade toe good'
+const testMnemonic =
+    'remove vessel lens oak junk view cancel say fatal hotel swamp cool true mean basic year shoe chat obey ozone hand blade toe good';
 
 const faucetUrl = 'https://faucet.testnet.iota.cafe';
 const nodeUrl = 'https://api.testnet.iota.cafe';
-const explorerTxBlockUrl = "https://explorer.rebased.iota.org/txblock/";
+const explorerTxBlockUrl = 'https://explorer.rebased.iota.org/txblock/';
 const senderKeypair = Ed25519Keypair.deriveKeypair(testMnemonic, `m/44'/4218'/0'/0'/1'`);
 const senderAddress = senderKeypair.getPublicKey().toIotaAddress();
-console.log("senderAddress: " + senderAddress);
-
+console.log('senderAddress: ' + senderAddress);
 
 (async () => {
     const client = new IotaClient({
         url: nodeUrl,
     });
-    await requestFundsIfNeeded(client, senderAddress)
-
+    await requestFundsIfNeeded(client, senderAddress);
 
     const senderCoins = await client.getCoins({ owner: senderAddress, limit: 10 });
     let inputCoins: IotaObjectRef[] = [];
@@ -29,14 +28,20 @@ console.log("senderAddress: " + senderAddress);
                 objectId: coin.coinObjectId,
                 version: coin.version,
                 digest: coin.digest,
-            })
+            });
             break;
         }
     }
 
     const transfers = [
-        { address: '0x111111111504e9350e635d65cd38ccd2c029434c6a3a480d8947a9ba6a15b215', amount: 1_000_000 },
-        { address: '0xa1a97d20bbad79e2ac89f215a3b3c4f2ff9a1aa3cc26e529bde6e7bc5500d610', amount: 1_000_000 },
+        {
+            address: '0x111111111504e9350e635d65cd38ccd2c029434c6a3a480d8947a9ba6a15b215',
+            amount: 1_000_000,
+        },
+        {
+            address: '0xa1a97d20bbad79e2ac89f215a3b3c4f2ff9a1aa3cc26e529bde6e7bc5500d610',
+            amount: 1_000_000,
+        },
     ];
     const txb = new Transaction();
     const coins = txb.splitCoins(
@@ -50,26 +55,29 @@ console.log("senderAddress: " + senderAddress);
 
     const kindBytes = await txb.build({ client, onlyTransactionKind: true });
 
-    const { signature, bytes } = await sponsorTransaction(client, senderAddress, kindBytes)
+    const { signature, bytes } = await sponsorTransaction(client, senderAddress, kindBytes);
 
-    const senderSignature = (await senderKeypair.signTransaction(fromB64(bytes))).signature
+    const senderSignature = (await senderKeypair.signTransaction(fromB64(bytes))).signature;
 
     const txResponse = await client.executeTransactionBlock({
         transactionBlock: bytes,
         signature: [senderSignature, signature],
         options: { showEffects: true },
     });
-    console.log(txResponse)
-    console.log(explorerTxBlockUrl + txResponse.digest)
-})()
+    console.log(txResponse);
+    console.log(explorerTxBlockUrl + txResponse.digest);
+})();
 
-
-async function sponsorTransaction(client: IotaClient, sender: string, transactionKindBytes: Uint8Array) {
+async function sponsorTransaction(
+    client: IotaClient,
+    sender: string,
+    transactionKindBytes: Uint8Array,
+) {
     const sponsorKeypair = Ed25519Keypair.deriveKeypair(testMnemonic, `m/44'/4218'/0'/0'/0'`);
     const sponsorAddress = sponsorKeypair.getPublicKey().toIotaAddress();
     console.log(`Sponsor address: ${sponsorAddress}`);
 
-    requestFundsIfNeeded(client, sponsorAddress)
+    requestFundsIfNeeded(client, sponsorAddress);
 
     const coins = await client.getCoins({ owner: sponsorAddress, limit: 10 });
     let gasCoins: IotaObjectRef[] = [];
@@ -79,7 +87,7 @@ async function sponsorTransaction(client: IotaClient, sender: string, transactio
                 objectId: coin.coinObjectId,
                 version: coin.version,
                 digest: coin.digest,
-            })
+            });
             break;
         }
     }
@@ -102,8 +110,8 @@ async function requestFundsIfNeeded(client: IotaClient, address: string) {
             host: faucetUrl,
             recipient: address,
         });
-        console.log(faucetResponse)
+        console.log(faucetResponse);
         // Wait some time for the indexer to process the tx
-        await new Promise(r => setTimeout(r, 3000));
+        await new Promise((r) => setTimeout(r, 3000));
     }
 }

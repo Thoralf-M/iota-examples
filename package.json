@@ -1,22 +1,28 @@
 {
-  "name": "exchange-ts-sdk",
-  "version": "1.0.0",
-  "description": "",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "devDependencies": {
-    "@types/ws": "^8.5.14"
-  },
-  "dependencies": {
-    "@iota/bcs": "^1.0.0",
-    "@iota/iota-sdk": "^1.0.0",
-    "axios": "^1.7.9",
-    "bech32": "^2.0.0",
-    "ed25519": "link:@iota/iota-sdk/keypairs/ed25519",
-    "ws": "^8.18.0"
-  }
+    "name": "exchange-ts-sdk",
+    "version": "1.0.0",
+    "description": "",
+    "scripts": {
+        "prettier:check": "prettier -c --ignore-unknown .",
+        "prettier:fix": "prettier -w --ignore-unknown .",
+        "prettier:fix:watch": "onchange '**' -i -f add -f change -j 5 -- prettier -w --ignore-unknown {{file}}",
+        "test": "tsc"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "devDependencies": {
+        "@ianvs/prettier-plugin-sort-imports": "^4.4.1",
+        "@types/node": "^22.15.17",
+        "@types/ws": "^8.5.14",
+        "prettier": "^3.5.3"
+    },
+    "dependencies": {
+        "@iota/bcs": "^1.0.0",
+        "@iota/iota-sdk": "^1.0.0",
+        "axios": "^1.7.9",
+        "bech32": "^2.0.0",
+        "ed25519": "link:@iota/iota-sdk/keypairs/ed25519",
+        "ws": "^8.18.0"
+    }
 }

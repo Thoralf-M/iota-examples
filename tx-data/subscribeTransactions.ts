@@ -7,27 +7,27 @@ const client = new IotaClient({
         // @ts-ignore
         WebSocketConstructor: WebSocket,
         websocket: {
-            url: 'wss://api.testnet.iota.cafe'
-        }
+            url: 'wss://api.testnet.iota.cafe',
+        },
     }),
 });
 
 (async () => {
     await client.subscribeTransaction({
         filter: {
-            FromAddress: '0x111111111504e9350e635d65cd38ccd2c029434c6a3a480d8947a9ba6a15b215'
+            FromAddress: '0x111111111504e9350e635d65cd38ccd2c029434c6a3a480d8947a9ba6a15b215',
         },
         onMessage(event) {
-            console.log(event)
+            console.log(event);
         },
     });
     await client.subscribeTransaction({
         filter: {
-            ToAddress: '0x111111111504e9350e635d65cd38ccd2c029434c6a3a480d8947a9ba6a15b215'
+            ToAddress: '0x111111111504e9350e635d65cd38ccd2c029434c6a3a480d8947a9ba6a15b215',
         },
         onMessage(event) {
             // handle subscription notification message here. This function is called once per subscription message.
-            console.log(event)
+            console.log(event);
             // {
             //     messageVersion: 'v1',
             //     status: { status: 'success' },
@@ -68,6 +68,6 @@ const client = new IotaClient({
             //   }
         },
     });
-})()
+})();
 
 // iota client pay --amounts 1 --recipients 0x111111111504e9350e635d65cd38ccd2c029434c6a3a480d8947a9ba6a15b215 --gas-budget 100000000 --input-coins 0x8251b9ae7554bf99baca9eb1e87888c5172168c078ec8ffd4d38db5ae548d840

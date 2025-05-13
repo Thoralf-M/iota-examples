@@ -8,14 +8,14 @@ const client = new IotaClient({
 
 (async () => {
     const object = await client.getObject({
-        id: "0x85f493ba298b68af3e4812385460e21ddc5aa61273efd9dc54aa6919848090e4",
+        id: '0x85f493ba298b68af3e4812385460e21ddc5aa61273efd9dc54aa6919848090e4',
         options: {
             showBcs: true,
             showDisplay: true,
             showContent: true,
             showOwner: true,
             showType: true,
-        }
-    })
+        },
+    });
     console.log(JSON.stringify(object, null, 2));
-})()
+})();
