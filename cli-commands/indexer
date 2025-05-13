@@ -9,3 +9,9 @@ docker run -d --name postgres \
  
 cargo run --features=indexer start --force-regenesis --with-faucet --with-indexer
 iota start --force-regenesis --with-faucet --with-indexer
+
+# Reader and Writer instances are needed
+# Reader
+cargo run --bin iota-indexer -- --db-url "postgres://postgres:postgrespw@localhost/iota_indexer" --fullnode-sync-worker --reset-db
+# Writer
+cargo run --bin iota-indexer -- --db-url "postgres://postgres:postgrespw@localhost/iota_indexer" --rpc-server-worker --client-metric-port=9181 --rpc-server-port 9001
