@@ -20,6 +20,8 @@
     "dependencies": {
         "@iota/bcs": "^1.0.0",
         "@iota/iota-sdk": "^1.0.0",
+        "@iota/ledgerjs-hw-app-iota": "^0.2.2",
+        "@ledgerhq/hw-transport-node-hid": "6.28.2",
         "axios": "^1.7.9",
         "bech32": "^2.0.0",
         "ed25519": "link:@iota/iota-sdk/keypairs/ed25519",
