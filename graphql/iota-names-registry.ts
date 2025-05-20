@@ -63,7 +63,7 @@ import { graphql } from '@iota/iota-sdk/graphql/schemas/2025.2';
         // @ts-ignore
         res.leafs.push(node);
         // Print the leaf in a bit nicer way
-        node.name = node.name.json.labels.reverse().join(".");
+        node.name = node.name.json.labels.join(".");
         node.value = node.value.json;
         console.log(node)
       }
