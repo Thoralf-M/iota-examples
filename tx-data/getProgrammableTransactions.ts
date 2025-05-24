@@ -1,16 +1,19 @@
 import { IotaClient } from '@iota/iota-sdk/client';
 
 const client = new IotaClient({
-    // url: 'http://127.0.0.1:9000',
-    url: 'https://api.testnet.iota.cafe',
+    url: 'https://indexer.mainnet.iota.cafe',
 });
 
 let cursor;
-let txsToFind = 5;
+let txsToFind = 5000;
 (async () => {
     searchLoop: while (true) {
         const txBlocksPage = await client.queryTransactionBlocks({
             cursor,
+            filter: {
+                // Currently only supported by the indexer
+                TransactionKind: 'ProgrammableTransaction'
+            },
             options: {
                 showEffects: false,
                 showInput: true,
@@ -19,12 +22,7 @@ let txsToFind = 5;
         });
         for (const txBlock of txBlocksPage.data) {
             if (
-                txBlock.transaction != null &&
-                // @ts-ignore
-                txBlock.transaction.data.transaction.kind != 'ConsensusCommitPrologueV1' &&
-                txBlock.transaction.data.transaction.kind != 'RandomnessStateUpdate' &&
-                txBlock.transaction.data.transaction.kind != 'EndOfEpochTransaction'
-                // && txBlock.transaction.data.transaction.kind != 'AuthenticatorStateUpdate'
+                txBlock.transaction != null
             ) {
                 // Cleanup output
                 try {
@@ -40,7 +38,7 @@ let txsToFind = 5;
                     delete txBlock.transaction.data.sender;
                     // @ts-ignore
                     delete txBlock.transaction.txSignatures;
-                } catch (error) {}
+                } catch (error) { }
 
                 console.log(
                     JSON.stringify(
