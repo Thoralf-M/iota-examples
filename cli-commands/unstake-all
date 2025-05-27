@@ -1,0 +1,25 @@
+#!/bin/bash
+# This script unstakes all StakedIotas and transfers them to a specified address.
+
+RECIPIENT_ADDRESS=$(iota client active-address) # Replace with the address where the unstaked IOTAs should be sent
+# Get the StakedIota objects
+mapfile -t STAKED_IOTAS < <(iota client objects --json | jq -r '.[] | select(.data.type == "0x3::staking_pool::StakedIota") | .data.objectId')
+
+cmd="iota client ptb "
+for i in "${!STAKED_IOTAS[@]}"; do
+    cmd+="--move-call 0x3::iota_system::request_withdraw_stake_non_entry @0x5 @${STAKED_IOTAS[$i]} "
+    cmd+="--assign balance$i "
+    # Merge balances together if there are multiple StakedIota objects
+    if [[ $i -gt 0 ]]; then
+        cmd+="--move-call 0x2::balance::join <0x2::iota::IOTA>  balance0 balance$i "
+    fi
+done
+cmd+="
+--move-call 0x2::coin::from_balance <0x2::iota::IOTA> balance0 \
+--assign coin \
+--transfer-objects [ coin ] @$RECIPIENT_ADDRESS \
+--gas-budget 10000000 \
+--gas-coin @0x0031cf44d9b568dbd93302d23fa064b13b42e0c3f741783229702f85584d1ee0 \
+--dry-run" # Remove --dry-run to actually send the transaction
+# Execute the command
+$cmd
