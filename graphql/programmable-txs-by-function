@@ -14,3 +14,50 @@ curl -i -X POST https://graphql.mainnet.iota.cafe \
   --header 'x-iota-rpc-show-usage: true' \
   --header 'Content-Type: application/json' \
   --data '{"query":"query { transactionBlocks(filter: {function: \"0x84cf5d12de2f9731a89bb519bc0c982a941b319a33abefdd5ed2054ad931de08::identity::new\"}) { nodes { digest } pageInfo { startCursor endCursor } } }"}'
+
+query txBlockByFunctioncall {
+  transactionBlocks(
+    filter: {function: "0x3::iota_system::request_add_stake"}
+  ) {
+    nodes {
+      ... on TransactionBlock {
+        kind{
+          ... on ProgrammableTransactionBlock{
+            transactions{
+              nodes{
+                __typename
+                ... on MoveCallTransaction{
+                  package
+                  module
+                  functionName
+                }
+                
+              }
+            }
+          }
+        }
+        digest
+        sender{
+          address
+        }
+        effects{
+          objectChanges{
+            nodes{
+              outputState{
+                asMoveObject{
+                  contents{
+                    json
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+  }
+}
