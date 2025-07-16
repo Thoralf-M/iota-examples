@@ -1,26 +1,25 @@
 # devnet
-# iota_names object https://explorer.rebased.iota.org/object/0xbf3563622035af599057c46f4b871e0a9817c7bab759354532402be6d9538ba3?network=devnet
-IOTA_NAMES_PACKAGE_ADDRESS=0xe1284870018484a7a12255aebb737b6b98b47d652b842ea2f324499ff163a648
-IOTA_NAMES_OBJECT_ID=0xa92a67ae8a8c644acfa6dd5a4d8098a20b07b6061cbf36aff8daef3ba892913f
-IOTA_NAMES_PAYMENTS_PACKAGE_ADDRESS=0x1efac8bf200acca64b62ce75557cd7232310fc8c4ea90960487d2908055fc94f
-IOTA_NAMES_REGISTRY_ID=0x88fa01b1f2462f2f33b593eb205b88158e1f51594102b9748b73f134388a3f2d
-IOTA_NAMES_REVERSE_REGISTRY_ID=0x1b3840a267efdc30d11b2b7ad2e574cf8483cd4e06bdf7b39c61ee5717ac3fe6
-IOTA_NAMES_AUCTION_PACKAGE_ADDRESS=0x3263bf636c2f60b04a7bf376b0048c36cc0268afee6abaaaceee765d5ea3f3cf
-IOTA_NAMES_COUPONS_PACKAGE_ADDRESS=0x7add42bba66f170587fb5ead0c411f3356c54f9e0f9d11028a230702eab6ea60
-IOTA_NAMES_SUBNAMES_PACKAGE_ADDRESS=0xa61121b31bc079e3dcc8e8e0c97857bde9eb077cd90070fbec737246161922b1
-IOTA_NAMES_AUCTION_HOUSE_OBJECT_ID=0xcb9e1c857825e61211d1ea7507847d8b8145e0a890f3392c56771af2a77c932c
+# iota_names object https://explorer.rebased.iota.org/object/0x07c59b37bd7d036bf78fa30561a2ab9f7a970837487656ec29466e817f879342?network=devnet
+IOTA_NAMES_PACKAGE_ADDRESS=0xb9d617f24c84826bf660a2f4031951678cc80c264aebc4413459fb2a95ada9ba
+IOTA_NAMES_OBJECT_ID=0x07c59b37bd7d036bf78fa30561a2ab9f7a970837487656ec29466e817f879342
+IOTA_NAMES_PAYMENTS_PACKAGE_ADDRESS=0x98b9b33b7c2347a8f4e8b8716fb4c7e6e1af846ec2ea063a47bba81ffe03b440
+IOTA_NAMES_REGISTRY_ID=0xe00b2f2400c33b4dbd3081c4dcf2e289d0544caba23a3d130b264bd756403c07
+IOTA_NAMES_REVERSE_REGISTRY_ID=0x1c1da17843cc453ad4079b05ce55e103b7a8cdd4db6ab42dc367b47ed6d8994d
+IOTA_NAMES_AUCTION_PACKAGE_ADDRESS=0x79c8714ea294a92da04875c77ccabf8d1a06107e80d41c23d6777d5b1e6724a5
+IOTA_NAMES_COUPONS_PACKAGE_ADDRESS=0xf2d61106ef44216f03709276c4e79c78485080c6d8fbad8464b7a570b9f36470
+IOTA_NAMES_SUBNAMES_PACKAGE_ADDRESS=0x4a16b7b2a9c194989519c87ee3f1d1007ece8aecb62b9a50a4c10075db0591a3
+IOTA_NAMES_AUCTION_HOUSE_OBJECT_ID=0xc922c77a1d4f4e699aa912a7c24aee4668f8975d2a5f01ba780f656289bf2c2c
 
-NAME=name.iota
-first_part="${NAME%%.*}"      # Extract the part before the dot (name)
-LENGTH=${#first_part}
+NAME=my-name.iota
 NAME_STRING="\"$NAME\""
 
-# compute price
-LENGTH=${#first_part}
+# compute price for name
 inspect_output=$(iota client ptb \
+--move-call $IOTA_NAMES_PACKAGE_ADDRESS::name::new $NAME_STRING \
+--assign name \
 --move-call $IOTA_NAMES_PACKAGE_ADDRESS::iota_names::get_config "<$IOTA_NAMES_PACKAGE_ADDRESS::pricing_config::PricingConfig>" @$IOTA_NAMES_OBJECT_ID \
 --assign config \
---move-call $IOTA_NAMES_PACKAGE_ADDRESS::pricing_config::calculate_base_price config $LENGTH \
+--move-call $IOTA_NAMES_PACKAGE_ADDRESS::pricing_config::calculate_base_price_of_name config name \
 --dev-inspect)
 # echo $inspect_output
 bytes=($(echo "$inspect_output" | grep -o 'Bytes: \[.*\]' | tail -n 1 | sed -E 's/[^0-9,]//g' | tr ',' '\n'))
@@ -28,6 +27,7 @@ HEX_VALUES=$(echo $bytes | tr ' ' '\n' | xargs -I {} printf "\\\\x%02x" {})
 PRICE=$(echo -n -e $HEX_VALUES | od -An -t u8 | tr -d ' ')
 echo $PRICE
 
+# register name
 TARGET_ADDRESS=$(iota client active-address)
 iota client ptb \
 --split-coins gas "[$PRICE]" \
@@ -42,16 +42,9 @@ iota client ptb \
 --transfer-objects "[res]" @$TARGET_ADDRESS \
 --dry-run
 
-# convert the result bytes in JS
-const bytes = new Uint8Array([0, 148, 53, 119, 0, 0, 0, 0]);
-const buffer = bytes.buffer;
-const view = new DataView(buffer);
-const u64Number = view.getBigUint64(0, true); // 'true' for little-endian, 'false' for big-endian
-console.log(u64Number.toString()); 
-
 # set set_reverse_lookup
 iota client ptb \
---move-call $IOTA_NAMES_PACKAGE_ADDRESS::controller::set_reverse_lookup @$IOTA_NAMES_OBJECT_ID $NAME \
+--move-call $IOTA_NAMES_PACKAGE_ADDRESS::controller::set_reverse_lookup @$IOTA_NAMES_OBJECT_ID $NAME_STRING \
 --dry-run
 
 # set set_data 
@@ -59,32 +52,34 @@ iota client ptb \
 --move-call $IOTA_NAMES_PACKAGE_ADDRESS::controller::set_user_data @0x093738ab2ff173e45e93a59bf7cc1adbf6e16e17f414446459a42940cc5dcf86 @0x1a593c66b93e01fa74e88d53e4d0fea49e0c27f5b948ba71f17782b304129ec0 '"my_key"' '"my_value"' @0x6 \
 --dry-run
 
-# authorize admin 
-IOTA_NAMES_PACKAGE_ADDRESS=0xa1d2ed2008d31d358cfaf61a89aa7cfaa78ed183dbe683620258e98c59f48b13
-IOTA_NAMES_OBJECT_ID=0xbf3563622035af599057c46f4b871e0a9817c7bab759354532402be6d9538ba3
-ADMIN_CAP=0x29d59745f0a470f8d359e3202131a058e1fa4700159119164f91ef585ef40b1b
+# authorize admin module
+IOTA_NAMES_PACKAGE_ADDRESS=0xb9d617f24c84826bf660a2f4031951678cc80c264aebc4413459fb2a95ada9ba
+IOTA_NAMES_OBJECT_ID=0x07c59b37bd7d036bf78fa30561a2ab9f7a970837487656ec29466e817f879342
+ADMIN_CAP=0x5a45ba086c2a873b5d6d34e8503e8ca8850588bf7f301285e279c8dab94eeb73
+ADMIN_ADDRESS=0x1ca3c38e888493f869ac35346a2041d6cf87b0b935ebba14b35a08811d8a76e4
 iota client ptb \
---move-call $IOTA_NAMES_PACKAGE_ADDRESS::admin::authorize @$ADMIN_CAP @$IOTA_NAMES_OBJECT_ID \
---dry-run
-iota client ptb \
---move-call $IOTA_NAMES_PACKAGE_ADDRESS::iota_names::authorize_app "<$IOTA_NAMES_PACKAGE_ADDRESS::admin::Admin>" @$ADMIN_CAP @$IOTA_NAMES_OBJECT_ID \
+--move-call $IOTA_NAMES_PACKAGE_ADDRESS::iota_names::authorize "<$IOTA_NAMES_PACKAGE_ADDRESS::admin::AdminAuth>" @$ADMIN_CAP @$IOTA_NAMES_OBJECT_ID \
+--sender @$ADMIN_ADDRESS \
 --dry-run
 
 # authorize payments app 
-IOTA_NAMES_PACKAGE_ADDRESS=0xa1d2ed2008d31d358cfaf61a89aa7cfaa78ed183dbe683620258e98c59f48b13
-IOTA_NAMES_OBJECT_ID=0xbf3563622035af599057c46f4b871e0a9817c7bab759354532402be6d9538ba3
-ADMIN_CAP=0x29d59745f0a470f8d359e3202131a058e1fa4700159119164f91ef585ef40b1b
+IOTA_NAMES_PACKAGE_ADDRESS=0xb9d617f24c84826bf660a2f4031951678cc80c264aebc4413459fb2a95ada9ba
+IOTA_NAMES_OBJECT_ID=0x07c59b37bd7d036bf78fa30561a2ab9f7a970837487656ec29466e817f879342
+ADMIN_CAP=0x5a45ba086c2a873b5d6d34e8503e8ca8850588bf7f301285e279c8dab94eeb73
 IOTA_NAMES_PAYMENTS_PACKAGE_ADDRESS=0xb06b8075797480a9bb660c927b666ca0301cdffa622e7c6b9c583bd2b45c781a
+ADMIN_ADDRESS=0x1ca3c38e888493f869ac35346a2041d6cf87b0b935ebba14b35a08811d8a76e4
 iota client ptb \
---move-call $IOTA_NAMES_PACKAGE_ADDRESS::iota_names::authorize_app "<$IOTA_NAMES_PAYMENTS_PACKAGE_ADDRESS::payments::PaymentsApp>" @$ADMIN_CAP @$IOTA_NAMES_OBJECT_ID \
+--move-call $IOTA_NAMES_PACKAGE_ADDRESS::iota_names::authorize "<$IOTA_NAMES_PAYMENTS_PACKAGE_ADDRESS::payments::PaymentsApp>" @$ADMIN_CAP @$IOTA_NAMES_OBJECT_ID \
+--sender @$ADMIN_ADDRESS \
 --dry-run
 # deauthorize payments app
 iota client ptb \
---move-call $IOTA_NAMES_PACKAGE_ADDRESS::iota_names::deauthorize_app "<$IOTA_NAMES_PAYMENTS_PACKAGE_ADDRESS::payments::PaymentsApp>" @$ADMIN_CAP @$IOTA_NAMES_OBJECT_ID \
+--move-call $IOTA_NAMES_PACKAGE_ADDRESS::iota_names::deauthorize "<$IOTA_NAMES_PAYMENTS_PACKAGE_ADDRESS::payments::PaymentsApp>" @$ADMIN_CAP @$IOTA_NAMES_OBJECT_ID \
+--sender @$ADMIN_ADDRESS \
 --dry-run
 
 # resolve address
-IOTA_NAMES_PACKAGE_ADDRESS=0x7e715bb93cb4fe1f19a60b41d99948f5048ebb6d3e387e6ee8e833758af15623
+IOTA_NAMES_PACKAGE_ADDRESS=0xb9d617f24c84826bf660a2f4031951678cc80c264aebc4413459fb2a95ada9ba
 NAME='"name.iota"'
 iota client ptb \
 --move-call $IOTA_NAMES_PACKAGE_ADDRESS::iota_names::registry "<$IOTA_NAMES_PACKAGE_ADDRESS::registry::Registry>" @$IOTA_NAMES_OBJECT_ID \
@@ -102,7 +97,7 @@ iota client ptb \
 --dev-inspect
 
 # resolve name (reverse lookup/reverse resolution)
-ADDRESS=0x111111111504e9350e635d65cd38ccd2c029434c6a3a480d8947a9ba6a15b215
+ADDRESS=0x0000a4984bd495d4346fa208ddff4f5d5e5ad48c21dec631ddebc99809f16900
 iota client ptb \
 --move-call $IOTA_NAMES_PACKAGE_ADDRESS::iota_names::registry "<$IOTA_NAMES_PACKAGE_ADDRESS::registry::Registry>" @$IOTA_NAMES_OBJECT_ID \
 --assign iota_names \
@@ -115,7 +110,7 @@ iota client ptb \
 --dev-inspect
 
 # resolve name (reverse lookup/reverse resolution) and print as utf-8
-ADDRESS=0x689dae2f77b048dcc08e14d73104ea14222b5be14cc31f34a16a1221f944c1e3
+ADDRESS=0x0000a4984bd495d4346fa208ddff4f5d5e5ad48c21dec631ddebc99809f16900
 inspect_output=$(iota client ptb \
 --move-call $IOTA_NAMES_PACKAGE_ADDRESS::iota_names::registry "<$IOTA_NAMES_PACKAGE_ADDRESS::registry::Registry>" @$IOTA_NAMES_OBJECT_ID \
 --assign iota_names \
@@ -135,23 +130,9 @@ for byte in "${bytes[@]}"; do
 done
 echo -e "$name"
 
-# set all data
-iota client ptb \
---make-move-vec "<std::string::String>" "['key1', 'key2']" \
---assign keys \
---make-move-vec "<std::string::String>" "['value1', 'value2']" \
---assign values \
---move-call 0x2::vec_map::from_keys_values "<std::string::String,std::string::String>" keys values \
---assign data_vec_map \
---move-call $IOTA_NAMES_PACKAGE_ADDRESS::name::new '"thoralf.iota"' \
---assign name \
---move-call iota::dynamic_field::borrow_mut @0x093738ab2ff173e45e93a59bf7cc1adbf6e16e17f414446459a42940cc5dcf86  \
---assign registry \
---move-call $IOTA_NAMES_PACKAGE_ADDRESS::registry::set_data registry name data_vec_map
-
-IOTA_NAMES_PACKAGE_ADDRESS=0xe1284870018484a7a12255aebb737b6b98b47d652b842ea2f324499ff163a648
-IOTA_NAMES_OBJECT_ID=0xa92a67ae8a8c644acfa6dd5a4d8098a20b07b6061cbf36aff8daef3ba892913f
-ADMIN_CAP=0x29d59745f0a470f8d359e3202131a058e1fa4700159119164f91ef585ef40b1b
+IOTA_NAMES_PACKAGE_ADDRESS=0xb9d617f24c84826bf660a2f4031951678cc80c264aebc4413459fb2a95ada9ba
+IOTA_NAMES_OBJECT_ID=0x07c59b37bd7d036bf78fa30561a2ab9f7a970837487656ec29466e817f879342
+ADMIN_CAP=0x5a45ba086c2a873b5d6d34e8503e8ca8850588bf7f301285e279c8dab94eeb73
 ADMIN_ADDRESS=0x1ca3c38e888493f869ac35346a2041d6cf87b0b935ebba14b35a08811d8a76e4
 # update pricing config
 iota client ptb \
@@ -185,23 +166,23 @@ iota client upgrade --upgrade-capability $UPGRADE_CAP packages/iota-names
 # packages init output
 {
     "adminAddress": "0x1ca3c38e888493f869ac35346a2041d6cf87b0b935ebba14b35a08811d8a76e4",
-    "adminCap": "0x29d59745f0a470f8d359e3202131a058e1fa4700159119164f91ef585ef40b1b",
-    "auctionPackageId": "0x3263bf636c2f60b04a7bf376b0048c36cc0268afee6abaaaceee765d5ea3f3cf",
-    "auctionHouseObjectId": "0xcb9e1c857825e61211d1ea7507847d8b8145e0a890f3392c56771af2a77c932c",
+    "adminCap": "0x5a45ba086c2a873b5d6d34e8503e8ca8850588bf7f301285e279c8dab94eeb73",
+    "auctionPackageId": "0x79c8714ea294a92da04875c77ccabf8d1a06107e80d41c23d6777d5b1e6724a5",
+    "auctionHouseObjectId": "0xc922c77a1d4f4e699aa912a7c24aee4668f8975d2a5f01ba780f656289bf2c2c",
     "coins": {
         "IOTA": {
             "type": "0x0000000000000000000000000000000000000000000000000000000000000002::iota::IOTA",
             "metadataId": "0xf7ceb0424ca93f77858c74aebda8bcd5ffe0f32b82ebcc38afb3ba643d03a5f8"
         }
     },
-    "iotaNamesObjectId": "0xa92a67ae8a8c644acfa6dd5a4d8098a20b07b6061cbf36aff8daef3ba892913f",
-    "packageId": "0xe1284870018484a7a12255aebb737b6b98b47d652b842ea2f324499ff163a648",
-    "paymentsPackageId": "0x1efac8bf200acca64b62ce75557cd7232310fc8c4ea90960487d2908055fc94f",
-    "publisherId": "0x545768ec190e828fcb19e1170635946afb6bd65b9714be9a7fb270a76c41d06f",
-    "registryTableId": "0x88fa01b1f2462f2f33b593eb205b88158e1f51594102b9748b73f134388a3f2d",
-    "reverseRegistryTableId": "0x1b3840a267efdc30d11b2b7ad2e574cf8483cd4e06bdf7b39c61ee5717ac3fe6",
-    "couponsPackageId": "0x7add42bba66f170587fb5ead0c411f3356c54f9e0f9d11028a230702eab6ea60",
-    "subNamesPackageId": "0xa61121b31bc079e3dcc8e8e0c97857bde9eb077cd90070fbec737246161922b1",
-    "tempSubnameProxyPackageId": "0x799739dbc50b5b0aa3f9011c475ddc479673a96b230a2a064178c9a65181d444",
-    "upgradeCap": "0xa2134d26f35ad4ba25614913d0b267117b52626c7a99f106adaa97fb928e12a7"
+    "iotaNamesObjectId": "0x07c59b37bd7d036bf78fa30561a2ab9f7a970837487656ec29466e817f879342",
+    "packageId": "0xb9d617f24c84826bf660a2f4031951678cc80c264aebc4413459fb2a95ada9ba",
+    "paymentsPackageId": "0x98b9b33b7c2347a8f4e8b8716fb4c7e6e1af846ec2ea063a47bba81ffe03b440",
+    "publisherId": "0xb9435d6c5f3a7bd85fa362b4b89262cf738d48774695e8e9955704ce0fd3526f",
+    "registryTableId": "0xe00b2f2400c33b4dbd3081c4dcf2e289d0544caba23a3d130b264bd756403c07",
+    "reverseRegistryTableId": "0x1c1da17843cc453ad4079b05ce55e103b7a8cdd4db6ab42dc367b47ed6d8994d",
+    "couponsPackageId": "0xf2d61106ef44216f03709276c4e79c78485080c6d8fbad8464b7a570b9f36470",
+    "subnamesPackageId": "0x1efbf928710d0d92635dacff4c502516169d37fa006cabd2f3cdd0123221e09e",
+    "tempSubnameProxyPackageId": "0x4a16b7b2a9c194989519c87ee3f1d1007ece8aecb62b9a50a4c10075db0591a3",
+    "upgradeCap": "0xd64205c4b10eff4b4adb00ab6f754cda8d8e7525985a31307f7e232481dfaf6e"
 }
