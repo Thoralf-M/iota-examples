@@ -48,8 +48,11 @@ iota client ptb \
 --dry-run
 
 # set set_data 
+IOTA_NAMES_PACKAGE_ADDRESS=0xb9d617f24c84826bf660a2f4031951678cc80c264aebc4413459fb2a95ada9ba
+IOTA_NAMES_OBJECT_ID=0x07c59b37bd7d036bf78fa30561a2ab9f7a970837487656ec29466e817f879342
+NAME_REGISTRATION_ID=$(iota name list --json | jq -r '.[0].id')
 iota client ptb \
---move-call $IOTA_NAMES_PACKAGE_ADDRESS::controller::set_user_data @0x093738ab2ff173e45e93a59bf7cc1adbf6e16e17f414446459a42940cc5dcf86 @0x1a593c66b93e01fa74e88d53e4d0fea49e0c27f5b948ba71f17782b304129ec0 '"my_key"' '"my_value"' @0x6 \
+--move-call $IOTA_NAMES_PACKAGE_ADDRESS::controller::set_user_data @$IOTA_NAMES_OBJECT_ID @$NAME_REGISTRATION_ID '"website"' '"my_website_url"' @0x6 \
 --dry-run
 
 # authorize admin module
