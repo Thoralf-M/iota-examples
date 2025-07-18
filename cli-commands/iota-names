@@ -55,32 +55,6 @@ iota client ptb \
 --move-call $IOTA_NAMES_PACKAGE_ADDRESS::controller::set_user_data @$IOTA_NAMES_OBJECT_ID @$NAME_REGISTRATION_ID '"website"' '"my_website_url"' @0x6 \
 --dry-run
 
-# authorize admin module
-IOTA_NAMES_PACKAGE_ADDRESS=0xb9d617f24c84826bf660a2f4031951678cc80c264aebc4413459fb2a95ada9ba
-IOTA_NAMES_OBJECT_ID=0x07c59b37bd7d036bf78fa30561a2ab9f7a970837487656ec29466e817f879342
-ADMIN_CAP=0x5a45ba086c2a873b5d6d34e8503e8ca8850588bf7f301285e279c8dab94eeb73
-ADMIN_ADDRESS=0x1ca3c38e888493f869ac35346a2041d6cf87b0b935ebba14b35a08811d8a76e4
-iota client ptb \
---move-call $IOTA_NAMES_PACKAGE_ADDRESS::iota_names::authorize "<$IOTA_NAMES_PACKAGE_ADDRESS::admin::AdminAuth>" @$ADMIN_CAP @$IOTA_NAMES_OBJECT_ID \
---sender @$ADMIN_ADDRESS \
---dry-run
-
-# authorize payments app 
-IOTA_NAMES_PACKAGE_ADDRESS=0xb9d617f24c84826bf660a2f4031951678cc80c264aebc4413459fb2a95ada9ba
-IOTA_NAMES_OBJECT_ID=0x07c59b37bd7d036bf78fa30561a2ab9f7a970837487656ec29466e817f879342
-ADMIN_CAP=0x5a45ba086c2a873b5d6d34e8503e8ca8850588bf7f301285e279c8dab94eeb73
-IOTA_NAMES_PAYMENTS_PACKAGE_ADDRESS=0xb06b8075797480a9bb660c927b666ca0301cdffa622e7c6b9c583bd2b45c781a
-ADMIN_ADDRESS=0x1ca3c38e888493f869ac35346a2041d6cf87b0b935ebba14b35a08811d8a76e4
-iota client ptb \
---move-call $IOTA_NAMES_PACKAGE_ADDRESS::iota_names::authorize "<$IOTA_NAMES_PAYMENTS_PACKAGE_ADDRESS::payments::PaymentsApp>" @$ADMIN_CAP @$IOTA_NAMES_OBJECT_ID \
---sender @$ADMIN_ADDRESS \
---dry-run
-# deauthorize payments app
-iota client ptb \
---move-call $IOTA_NAMES_PACKAGE_ADDRESS::iota_names::deauthorize "<$IOTA_NAMES_PAYMENTS_PACKAGE_ADDRESS::payments::PaymentsApp>" @$ADMIN_CAP @$IOTA_NAMES_OBJECT_ID \
---sender @$ADMIN_ADDRESS \
---dry-run
-
 # resolve address
 IOTA_NAMES_PACKAGE_ADDRESS=0xb9d617f24c84826bf660a2f4031951678cc80c264aebc4413459fb2a95ada9ba
 NAME='"name.iota"'
@@ -132,6 +106,105 @@ for byte in "${bytes[@]}"; do
   name+=$(printf '\\x%02x' $byte)
 done
 echo -e "$name"
+
+### Admin commands
+
+# authorize admin module
+IOTA_NAMES_PACKAGE_ADDRESS=0xb9d617f24c84826bf660a2f4031951678cc80c264aebc4413459fb2a95ada9ba
+IOTA_NAMES_OBJECT_ID=0x07c59b37bd7d036bf78fa30561a2ab9f7a970837487656ec29466e817f879342
+ADMIN_CAP=0x5a45ba086c2a873b5d6d34e8503e8ca8850588bf7f301285e279c8dab94eeb73
+ADMIN_ADDRESS=0x1ca3c38e888493f869ac35346a2041d6cf87b0b935ebba14b35a08811d8a76e4
+iota client ptb \
+--move-call $IOTA_NAMES_PACKAGE_ADDRESS::iota_names::authorize "<$IOTA_NAMES_PACKAGE_ADDRESS::admin::AdminAuth>" @$ADMIN_CAP @$IOTA_NAMES_OBJECT_ID \
+--sender @$ADMIN_ADDRESS \
+--dry-run
+
+ADMIN_CAP=0x5a45ba086c2a873b5d6d34e8503e8ca8850588bf7f301285e279c8dab94eeb73
+IOTA_NAMES_COUPONS_PACKAGE_ADDRESS=0xf2d61106ef44216f03709276c4e79c78485080c6d8fbad8464b7a570b9f36470
+IOTA_NAMES_OBJECT_ID=0x07c59b37bd7d036bf78fa30561a2ab9f7a970837487656ec29466e817f879342
+ADMIN_ADDRESS=0x1ca3c38e888493f869ac35346a2041d6cf87b0b935ebba14b35a08811d8a76e4
+# Create PERCENTAGE_OFF off coupon that can be used AVAILABLE_CLAIMS times
+AVAILABLE_CLAIMS="some(100)"
+PERCENTAGE_OFF=20
+COUPON=$(echo -n "20_OFF" | b2sum -l 256 | cut -d ' ' -f1)
+iota client ptb \
+ --move-call std::option::none "<$IOTA_NAMES_COUPONS_PACKAGE_ADDRESS::range::Range>" \
+ --assign none_range \
+ --move-call $IOTA_NAMES_COUPONS_PACKAGE_ADDRESS::rules::new_coupon_rules none_range $AVAILABLE_CLAIMS none none none_range false \
+ --assign percent_rules_20 \
+ --move-call $IOTA_NAMES_COUPONS_PACKAGE_ADDRESS::coupon_house::admin_add_percentage_coupon @$ADMIN_CAP @$IOTA_NAMES_OBJECT_ID "'$COUPON'" $PERCENTAGE_OFF percent_rules_20 \
+ --sender @$ADMIN_ADDRESS \
+ --dry-run
+# Create PERCENTAGE_OFF off coupon that can be used AVAILABLE_CLAIMS times
+# Create FIXED_AMOUNT_OFF off coupon for TARGET_ADDRESS that can be used AVAILABLE_CLAIMS times
+# Create expired coupons
+# Create 40x 1% off stackable coupons
+# Create 100x 1 year renew stackable coupon with 10% off
+# Create 50% off coupon for names with 10 characters
+TARGET_ADDRESS="some(@0xc6ad000986b4e1333d85554bb754d10b84f272a47af24e405cd9bbb408f7f3f1)"
+AVAILABLE_CLAIMS="some(100)"
+PERCENTAGE_OFF=20
+FIXED_AMOUNT_OFF=10000
+COUPON_20=$(echo -n "20%_OFF" | b2sum -l 256 | cut -d ' ' -f1)
+echo "COUPON_20: $COUPON_20"
+ADDRESS_10000_OFF=$(echo -n "Mario_10000_OFF" | b2sum -l 256 | cut -d ' ' -f1)
+echo "ADDRESS_10000_OFF: $ADDRESS_10000_OFF"
+COUPON_EXPIRED=$(echo -n "EXPIRED" | b2sum -l 256 | cut -d ' ' -f1)
+echo "COUPON_EXPIRED: $COUPON_EXPIRED"
+COUPON_1_STACK=$(echo -n "1_OFF_STACKABLE" | b2sum -l 256 | cut -d ' ' -f1)
+echo "COUPON_1_STACK: $COUPON_1_STACK"
+YEAR_RENEW_STACKABLE=$(echo -n "1_YEAR_RENEW_STACKABLE_10%" | b2sum -l 256 | cut -d ' ' -f1)
+echo "YEAR_RENEW_STACKABLE: $YEAR_RENEW_STACKABLE"
+TEN_CHARS_50_OFF=$(echo -n "10_CHARS_50%_OFF" | b2sum -l 256 | cut -d ' ' -f1)
+echo "TEN_CHARS_50_OFF: $TEN_CHARS_50_OFF"
+iota client ptb \
+ --move-call std::option::none "<$IOTA_NAMES_COUPONS_PACKAGE_ADDRESS::range::Range>" \
+ --assign none_range \
+ --move-call $IOTA_NAMES_COUPONS_PACKAGE_ADDRESS::rules::new_coupon_rules none_range $AVAILABLE_CLAIMS none none none_range false \
+ --assign percent_rules_20 \
+ --move-call $IOTA_NAMES_COUPONS_PACKAGE_ADDRESS::coupon_house::admin_add_percentage_coupon @$ADMIN_CAP @$IOTA_NAMES_OBJECT_ID "'$COUPON'" $PERCENTAGE_OFF percent_rules_20 \
+ --move-call $IOTA_NAMES_COUPONS_PACKAGE_ADDRESS::rules::new_coupon_rules none_range $AVAILABLE_CLAIMS $TARGET_ADDRESS none none_range false \
+ --assign address_rules \
+ --move-call $IOTA_NAMES_COUPONS_PACKAGE_ADDRESS::coupon_house::admin_add_fixed_coupon @$ADMIN_CAP @$IOTA_NAMES_OBJECT_ID "'$ADDRESS_10000_OFF'" $FIXED_AMOUNT_OFF address_rules \
+ --move-call $IOTA_NAMES_COUPONS_PACKAGE_ADDRESS::rules::new_coupon_rules none_range $AVAILABLE_CLAIMS $TARGET_ADDRESS "some(0)" none_range true \
+ --assign expired_address_rules \
+ --move-call $IOTA_NAMES_COUPONS_PACKAGE_ADDRESS::coupon_house::admin_add_fixed_coupon @$ADMIN_CAP @$IOTA_NAMES_OBJECT_ID "'$COUPON_EXPIRED'" $FIXED_AMOUNT_OFF expired_address_rules \
+ --move-call $IOTA_NAMES_COUPONS_PACKAGE_ADDRESS::rules::new_coupon_rules none_range "some(40)" none none none_range true \
+ --assign percent_rules_1 \
+ --move-call $IOTA_NAMES_COUPONS_PACKAGE_ADDRESS::coupon_house::admin_add_percentage_coupon @$ADMIN_CAP @$IOTA_NAMES_OBJECT_ID "'$COUPON_1_STACK'" 1 percent_rules_1 \
+ --move-call $IOTA_NAMES_COUPONS_PACKAGE_ADDRESS::range::new 1 1 \
+ --assign year_range \
+ --move-call std::option::some "<$IOTA_NAMES_COUPONS_PACKAGE_ADDRESS::range::Range>" year_range \
+ --assign year_range_option \
+ --move-call $IOTA_NAMES_COUPONS_PACKAGE_ADDRESS::rules::new_coupon_rules none_range "some(40)" none none year_range_option true \
+ --assign year_renew_rules \
+ --move-call $IOTA_NAMES_COUPONS_PACKAGE_ADDRESS::coupon_house::admin_add_percentage_coupon @$ADMIN_CAP @$IOTA_NAMES_OBJECT_ID "'$YEAR_RENEW_STACKABLE'" 10 year_renew_rules \
+ --move-call $IOTA_NAMES_COUPONS_PACKAGE_ADDRESS::range::new 10 10 \
+ --assign length_range \
+ --move-call std::option::some "<$IOTA_NAMES_COUPONS_PACKAGE_ADDRESS::range::Range>" length_range \
+ --assign length_range_option \
+ --move-call $IOTA_NAMES_COUPONS_PACKAGE_ADDRESS::rules::new_coupon_rules length_range_option "some(40)" none none none_range false \
+ --assign length_renew_rules \
+ --move-call $IOTA_NAMES_COUPONS_PACKAGE_ADDRESS::coupon_house::admin_add_percentage_coupon @$ADMIN_CAP @$IOTA_NAMES_OBJECT_ID "'$TEN_CHARS_50_OFF'" 50 length_renew_rules \
+ --sender @$ADMIN_ADDRESS \
+ --serialize-unsigned-transaction
+ --dry-run
+
+# authorize payments app 
+IOTA_NAMES_PACKAGE_ADDRESS=0xb9d617f24c84826bf660a2f4031951678cc80c264aebc4413459fb2a95ada9ba
+IOTA_NAMES_OBJECT_ID=0x07c59b37bd7d036bf78fa30561a2ab9f7a970837487656ec29466e817f879342
+ADMIN_CAP=0x5a45ba086c2a873b5d6d34e8503e8ca8850588bf7f301285e279c8dab94eeb73
+IOTA_NAMES_PAYMENTS_PACKAGE_ADDRESS=0xb06b8075797480a9bb660c927b666ca0301cdffa622e7c6b9c583bd2b45c781a
+ADMIN_ADDRESS=0x1ca3c38e888493f869ac35346a2041d6cf87b0b935ebba14b35a08811d8a76e4
+iota client ptb \
+--move-call $IOTA_NAMES_PACKAGE_ADDRESS::iota_names::authorize "<$IOTA_NAMES_PAYMENTS_PACKAGE_ADDRESS::payments::PaymentsApp>" @$ADMIN_CAP @$IOTA_NAMES_OBJECT_ID \
+--sender @$ADMIN_ADDRESS \
+--dry-run
+# deauthorize payments app
+iota client ptb \
+--move-call $IOTA_NAMES_PACKAGE_ADDRESS::iota_names::deauthorize "<$IOTA_NAMES_PAYMENTS_PACKAGE_ADDRESS::payments::PaymentsApp>" @$ADMIN_CAP @$IOTA_NAMES_OBJECT_ID \
+--sender @$ADMIN_ADDRESS \
+--dry-run
 
 IOTA_NAMES_PACKAGE_ADDRESS=0xb9d617f24c84826bf660a2f4031951678cc80c264aebc4413459fb2a95ada9ba
 IOTA_NAMES_OBJECT_ID=0x07c59b37bd7d036bf78fa30561a2ab9f7a970837487656ec29466e817f879342
