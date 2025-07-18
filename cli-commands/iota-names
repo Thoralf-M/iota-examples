@@ -162,7 +162,7 @@ iota client ptb \
  --assign none_range \
  --move-call $IOTA_NAMES_COUPONS_PACKAGE_ADDRESS::rules::new_coupon_rules none_range $AVAILABLE_CLAIMS none none none_range false \
  --assign percent_rules_20 \
- --move-call $IOTA_NAMES_COUPONS_PACKAGE_ADDRESS::coupon_house::admin_add_percentage_coupon @$ADMIN_CAP @$IOTA_NAMES_OBJECT_ID "'$COUPON'" $PERCENTAGE_OFF percent_rules_20 \
+ --move-call $IOTA_NAMES_COUPONS_PACKAGE_ADDRESS::coupon_house::admin_add_percentage_coupon @$ADMIN_CAP @$IOTA_NAMES_OBJECT_ID "'$COUPON_20'" $PERCENTAGE_OFF percent_rules_20 \
  --move-call $IOTA_NAMES_COUPONS_PACKAGE_ADDRESS::rules::new_coupon_rules none_range $AVAILABLE_CLAIMS $TARGET_ADDRESS none none_range false \
  --assign address_rules \
  --move-call $IOTA_NAMES_COUPONS_PACKAGE_ADDRESS::coupon_house::admin_add_fixed_coupon @$ADMIN_CAP @$IOTA_NAMES_OBJECT_ID "'$ADDRESS_10000_OFF'" $FIXED_AMOUNT_OFF address_rules \
