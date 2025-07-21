@@ -1,0 +1,13 @@
+ACTIVE_ADDRESS=$(iota client active-address)
+# Get the first non-active address from the list
+GAS_SPONSOR=$(iota client addresses --json | jq -r --arg active $ACTIVE_ADDRESS '
+  .addresses[] | select(.[1] != $active) | .[1]
+' | head -n 1)
+COIN_OBJECT_ID=$(iota client gas --json | jq -r '.[0].gasCoinId')
+
+iota client pay \
+    --input-coins $COIN_OBJECT_ID \
+    --amounts 0 \
+    --recipients $ACTIVE_ADDRESS \
+    --gas-sponsor $GAS_SPONSOR \
+    --serialize-unsigned-transaction
