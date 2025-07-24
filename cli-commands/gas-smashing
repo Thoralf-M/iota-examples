@@ -1,0 +1,11 @@
+ACTIVE_ADDRESS=$(iota client active-address)
+read COIN_OBJECT_ID_1 COIN_OBJECT_ID_2 < <(iota client gas --json | jq -r '[.[0].gasCoinId, .[1].gasCoinId] | @sh' | tr -d \')
+AMOUNT=1000
+
+iota client ptb \
+  --split-coins gas "[$AMOUNT]" \
+  --assign coins \
+  --transfer-objects "[coins]" @$ACTIVE_ADDRESS \
+  --gas-coin @$COIN_OBJECT_ID_1 @$COIN_OBJECT_ID_2 \
+  --gas-budget 2000000 \
+  --dry-run
