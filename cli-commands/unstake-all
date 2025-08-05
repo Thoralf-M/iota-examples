@@ -19,7 +19,6 @@ cmd+="
 --assign coin \
 --transfer-objects [ coin ] @$RECIPIENT_ADDRESS \
 --gas-budget 10000000 \
---gas-coin @0x0031cf44d9b568dbd93302d23fa064b13b42e0c3f741783229702f85584d1ee0 \
 --dry-run" # Remove --dry-run to actually send the transaction
 # Execute the command
 $cmd
