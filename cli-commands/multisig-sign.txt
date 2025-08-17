@@ -1,0 +1,16 @@
+# For testing of multisigs on the same machine
+TX_DATA="AAARAAkBZAAAAAAA...AAAAA"
+SIG1=$(iota keytool sign --address AddrForMultiSig1 --data $TX_DATA --json | jq -r '.iotaSignature')
+SIG2=$(iota keytool sign --address AddrForMultiSig2 --data $TX_DATA --json | jq -r '.iotaSignature')
+SIG3=$(iota keytool sign --address AddrForMultiSig3 --data $TX_DATA --json | jq -r '.iotaSignature')
+
+COMBINED_SIG=$(iota keytool multi-sig-combine-partial-sig \
+--pks AG+hXBtpV+kOmGfTWT1X4Bz7Hjdo+dwhT8vWoONd0Bwl AIQRbyXfJYqMCrOunqJI3JtDfIldeMmU4G0/5FlXbqba AFJ/IT8eh3zYqax/EkoSWqBbbE+FY5Abeaana2ffzpy1 AKQfMrarpsxpq4zq6XMzFhvqGPU9zNjUTd9KnhXEEvfT AQIbWcxmj/KNVEfjps2w90UMVdNQG2P07bQJUrqVYllupg== \
+--weights 1 1 1 1 1 \
+--threshold 3 \
+--sigs \
+$SIG1 \
+$SIG2 \
+$SIG3 \
+--json | jq -r '.multisigSerialized')
+echo "COMBINED_SIG: $COMBINED_SIG"
