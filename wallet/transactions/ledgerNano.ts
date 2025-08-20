@@ -1,4 +1,4 @@
-import { toHEX } from '@iota/bcs';
+import { toHex } from '@iota/iota-sdk/utils';
 import { IotaClient } from '@iota/iota-sdk/client';
 import { messageWithIntent, toSerializedSignature } from '@iota/iota-sdk/cryptography';
 import { Ed25519PublicKey } from '@iota/iota-sdk/keypairs/ed25519';
@@ -16,7 +16,7 @@ const client = new IotaClient({
     // For compatibility with other wallets, use IOTA 4218 as coin type instead of testnet 1.
     let bip44Path = `m/44'/1'/0'/0'/0'`;
     let { address, publicKey } = await ledgerClient.getPublicKey(bip44Path);
-    let iotaAddress = '0x' + toHEX(address);
+    let iotaAddress = '0x' + toHex(address);
     console.log('Sender address: ' + iotaAddress);
 
     const transfers = [

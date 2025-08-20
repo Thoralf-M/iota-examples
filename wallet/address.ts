@@ -1,4 +1,4 @@
-import { fromHEX } from '@iota/bcs';
+import { fromHex } from '@iota/iota-sdk/utils';
 import { decodeIotaPrivateKey } from '@iota/iota-sdk/cryptography';
 import { Ed25519Keypair } from '@iota/iota-sdk/keypairs/ed25519';
 
@@ -22,7 +22,7 @@ const add = keypairPrivKey.getPublicKey().toIotaAddress();
 console.log(add);
 
 const kp_import_0 = Ed25519Keypair.fromSecretKey(
-    fromHEX('0xd463e11c7915945e86ac2b72d88b8190cfad8ff7b48e7eb892c275a5cf0a3e82'),
+    fromHex('0xd463e11c7915945e86ac2b72d88b8190cfad8ff7b48e7eb892c275a5cf0a3e82'),
 );
 
 // import { Secp256k1Keypair } from '@iota/iota-sdk/keypairs/secp256k1';
