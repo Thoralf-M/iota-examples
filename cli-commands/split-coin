@@ -1,2 +1,10 @@
 coinObjectId=$(iota client gas --json | jq -r '.[0].gasCoinId')
 iota client split-coin --coin-id $coinObjectId --count 2 --dev-inspect
+
+# PTB version, also sending the gas at the end, that's not needed
+ACTIVE_ADDRESS=$(iota client active-address)
+iota client ptb \
+--move-call 0x2::coin::split "<0x2::iota::IOTA>" gas 100 \
+--assign coin \
+--transfer-objects "[coin, gas]" @$ACTIVE_ADDRESS \
+--dry-run
