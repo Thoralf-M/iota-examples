@@ -34,3 +34,14 @@ iota client ptb \
 --move-call 0x3::timelocked_staking::request_add_stake @0x5 timelocked_stake validator_address \
 --gas-budget 50000000 \
 --dry-run
+
+# unlock timelocked staked IOTA and transfer to sender
+iota client ptb \
+--assign timelocked_staked_iota @0x00020a50ce34ec50e35fae9854b25a12655d9d699558021ab7f01eb4d82dacd8 \
+--assign sender_address @0x24adc8c88f491956b3db3aa7814122b5c35249c512be41e0cf5d1cc22de73c9f \
+--move-call 0x2::timelock::unlock "<0x2::balance::Balance<0x2::iota::IOTA>>" timelocked_staked_iota \
+--assign unlocked_balance \
+--move-call 0x2::coin::from_balance "<0x2::iota::IOTA>" unlocked_balance \
+--assign coin \
+--move-call 0x2::transfer::public_transfer "<0x2::iota::IOTA>" coin sender_address \
+--dry-run
