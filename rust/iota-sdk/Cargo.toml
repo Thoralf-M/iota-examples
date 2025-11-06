@@ -1,0 +1,16 @@
+
+
+[package]
+name = "iota-rust-sdk-examples"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+bcs = "0.1.6"
+eyre = "0.6"
+iota-sdk = { git = "https://github.com/iotaledger/iota-rust-sdk" }
+tokio = "1.40.0"
+
+[[example]]
+name = "ptb_stats"
+path = "examples/ptb_stats.rs"
