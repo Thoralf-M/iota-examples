@@ -19,7 +19,7 @@
     },
     "dependencies": {
         "@iota/bcs": "^1.2.0",
-        "@iota/iota-sdk": "^1.5.0",
+        "@iota/iota-sdk": "^1.7.1",
         "@iota/ledgerjs-hw-app-iota": "^0.2.2",
         "@ledgerhq/hw-transport-node-hid": "6.28.2",
         "axios": "^1.12.0",
