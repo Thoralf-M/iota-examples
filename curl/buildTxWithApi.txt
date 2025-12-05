@@ -1,5 +1,5 @@
 # Prepare transaction
-curl https://api.testnet.iota.cafe  \
+curl https://api.testnet.iota.cafe \
 --header 'content-type: application/json' \
 --data '{
     "jsonrpc": "2.0",
@@ -15,7 +15,7 @@ curl https://api.testnet.iota.cafe  \
 }' | jq .
 
 # Dry run transaction
-curl https://api.testnet.iota.cafe  \
+curl https://api.testnet.iota.cafe \
 --header 'content-type: application/json' \
 --data '{
     "jsonrpc": "2.0",
@@ -30,7 +30,7 @@ curl https://api.testnet.iota.cafe  \
 iota keytool sign --address 0x111111111504e9350e635d65cd38ccd2c029434c6a3a480d8947a9ba6a15b215 --data AAADAAhkAAAAAAAAAAAIyAAAAAAAAAAAIBEREREVBOk1DmNdZc04zNLAKUNMajpIDYlHqbpqFbIVAgIAAgEAAAEBAAECAwAAAAADAAABAAECABEREREVBOk1DmNdZc04zNLAKUNMajpIDYlHqbpqFbIVAQAxz0TZtWjb2TMC0j+gZLE7QuDD90F4MilwL4VYTR7gR9SxDAAAAAAgzFKhcPCs0Q1NZdxjuD9IQkOw7Ov6aJrzzN37AA6RUUQRERERFQTpNQ5jXWXNOMzSwClDTGo6SA2JR6m6ahWyFegDAAAAAAAAAOH1BQAAAAAA
 
 # Execute transaction
-curl https://api.testnet.iota.cafe  \
+curl https://api.testnet.iota.cafe \
 --header 'content-type: application/json' \
 --data '{
     "jsonrpc": "2.0",
@@ -50,3 +50,51 @@ curl https://api.testnet.iota.cafe  \
         }
     }
 }' | jq .
+
+
+iota client switch --env testnet
+iota client faucet
+sleep 2
+SENDER_ADDRESS=$(iota client active-address)
+read GAS_COIN COIN_TO_SPLIT < <(iota client gas --json | jq -r '[.[0].gasCoinId, .[1].gasCoinId] | @sh' | tr -d \')
+AMOUNT_TO_SPLIT=1000
+# just sending to own address
+RECIPIENT_ADDRESS=$(iota client active-address)
+GAS_BUDGET=100000000
+
+JSON_DATA='{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "unsafe_batchTransaction",
+  "params": {
+    "signer": "'$SENDER_ADDRESS'",
+    "single_transaction_params": [
+      {
+        "moveCallRequestParams": {
+          "packageObjectId": "0x2",
+          "module": "coin",
+          "function": "split",
+          "typeArguments": ["0x2::iota::IOTA"],
+          "arguments": ["'$COIN_TO_SPLIT'", "'$AMOUNT_TO_SPLIT'"]
+        }
+      },
+      {
+        "moveCallRequestParams": {
+          "packageObjectId": "0x2",
+          "module": "transfer",
+          "function": "public_transfer",
+          "typeArguments": ["0x2::coin::Coin<0x2::iota::IOTA>"],
+          "arguments": [{"Result": 0}, "'$RECIPIENT_ADDRESS'"]
+        }
+      }
+    ],
+    "gas": "'$GAS_COIN'",
+    "gas_budget": "'$GAS_BUDGET'"
+  }
+}'
+
+echo "$JSON_DATA"
+
+curl https://api.testnet.iota.cafe \
+--header 'content-type: application/json' \
+--data "$JSON_DATA" | jq .
