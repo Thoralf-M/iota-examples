@@ -98,3 +98,53 @@ echo "$JSON_DATA"
 curl https://api.testnet.iota.cafe \
 --header 'content-type: application/json' \
 --data "$JSON_DATA" | jq .
+
+
+TIMELOCKED_IOTA=0x00020a50ce34ec50e35fae9854b25a12655d9d699558021ab7f01eb4d82dacd8
+SENDER_ADDRESS=0x24adc8c88f491956b3db3aa7814122b5c35249c512be41e0cf5d1cc22de73c9f
+GAS_COIN=0x2b9bf0e33071124a5d87c769c48e3470c4c8ce2df9d32dbe4991051681d7db52
+GAS_BUDGET=100000000
+
+JSON_DATA='{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "unsafe_batchTransaction",
+  "params": {
+    "signer": "'$SENDER_ADDRESS'",
+    "single_transaction_params": [
+      {
+        "moveCallRequestParams": {
+          "packageObjectId": "0x2",
+          "module": "timelock",
+          "function": "unlock",
+          "typeArguments": ["0x2::balance::Balance<0x2::iota::IOTA>"],
+          "arguments": ["'$TIMELOCKED_IOTA'"]
+        }
+      },
+      {
+        "moveCallRequestParams": {
+          "packageObjectId": "0x2",
+          "module": "coin",
+          "function": "from_balance",
+          "typeArguments": ["0x2::iota::IOTA"],
+          "arguments": [{"Result": 0}]
+        }
+      },
+      {
+        "moveCallRequestParams": {
+          "packageObjectId": "0x2",
+          "module": "transfer",
+          "function": "transfer",
+          "typeArguments": ["0x2::iota::IOTA"],
+          "arguments": [{"Result": 1}, "'$SENDER_ADDRESS'"]
+        }
+      }
+    ],
+    "gas": "'$GAS_COIN'",
+    "gas_budget": "'$GAS_BUDGET'"
+  }
+}'
+
+curl https://api.devnet.iota.cafe \
+--header 'content-type: application/json' \
+--data "$JSON_DATA" | jq .
