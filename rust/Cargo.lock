@@ -3645,9 +3645,11 @@ dependencies = [
 name = "iota-rust-sdk-examples"
 version = "0.1.0"
 dependencies = [
+ "base64 0.22.1",
  "bcs",
  "eyre",
  "iota-sdk 3.0.0-alpha.0",
+ "serde_json",
  "tokio",
 ]
 
