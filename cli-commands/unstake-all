@@ -18,7 +18,6 @@ cmd+="
 --move-call 0x2::coin::from_balance <0x2::iota::IOTA> balance0 \
 --assign coin \
 --transfer-objects [ coin ] @$RECIPIENT_ADDRESS \
---gas-budget 10000000 \
 --dry-run" # Remove --dry-run to actually send the transaction
 # Execute the command
 $cmd
