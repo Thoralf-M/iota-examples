@@ -8,7 +8,7 @@ const STAKED_IOTA_TYPE = "0x3::staking_pool::StakedIota";
 
 (async () => {
     const gqlClient = new IotaGraphQLClient({
-        url: 'https://graphql.testnet.iota.cafe',
+        url: 'https://graphql.devnet.iota.cafe',
     });
 
     let res = { stakeObjects: 0, addresses: new Set<string>() };
@@ -24,6 +24,11 @@ const STAKED_IOTA_TYPE = "0x3::staking_pool::StakedIota";
                             owner {
                                 address
                             }
+                        }
+                    }
+                    asMoveObject{
+                        contents{
+                            json
                         }
                     }
                 }
@@ -51,8 +56,8 @@ const STAKED_IOTA_TYPE = "0x3::staking_pool::StakedIota";
         // @ts-ignore
         for (let node of result.data.objects.nodes) {
             res.stakeObjects++;
-            console.log(node)
-            if (node.owner.owner) {
+            console.log(JSON.stringify(node, null, 2));
+            if (node.owner && node.owner.owner) {
                 res.addresses.add(node.owner.owner.address)
             } else {
                 console.warn("No owner found for node: ", node);
