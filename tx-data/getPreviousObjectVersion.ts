@@ -2,43 +2,54 @@ import { IotaClient } from '@iota/iota-sdk/client';
 
 (async () => {
     const client = new IotaClient({
-        url: 'https://api.testnet.iota.cafe',
+        url: 'https://indexer.testnet.iota.cafe',
     });
-    const objectId = '0x0031cf44d9b568dbd93302d23fa064b13b42e0c3f741783229702f85584d1ee0';
+    const objectId = '0xb42b9db5e3363ea80767891458406377ff212b8b4ce1aea5ad396df52250ada1';
     const object = await client.getObject({
         id: objectId,
-        options: { showPreviousTransaction: true },
-    });
-
-    // Manually get the previous version of the object as tryGetObjectBeforeVersion is not part of the TS SDK: https://github.com/iotaledger/iota/issues/6266
-    const txBlock = await client.getTransactionBlock({
-        digest: object.data?.previousTransaction!,
-        options: {
-            showInput: true,
-        },
-    });
-    let previousVersion;
-    // @ts-ignore
-    for (const input of txBlock.transaction?.data.transaction.inputs) {
-        if (input.type === 'object' && input.objectId === objectId) {
-            console.log('Found input:', input);
-            previousVersion = input.version;
-        }
-    }
-    // Object could also be used as gas object
-    // @ts-ignore
-    for (const input of txBlock.transaction?.data.gasData.payment) {
-        if (input.objectId === objectId) {
-            console.log('Found input as gas object:', input);
-            previousVersion = input.version;
-        }
-    }
-    console.log('Previous version:', previousVersion);
-
-    let previousObject = await client.tryGetPastObject({
-        id: objectId,
-        version: parseInt(previousVersion),
         options: { showContent: true, showPreviousTransaction: true },
     });
-    console.log(previousObject);
+
+    console.log('Current object version:', object.data?.version);
+    console.log(object);
+
+    const allVersions: any[] = [object];
+    let previousTransaction = object.data?.previousTransaction;
+
+    // Get all previous versions of the object
+    while (previousTransaction) {
+        const txBlock = await client.getTransactionBlock({
+            digest: previousTransaction,
+            options: {
+                showInput: true,
+                showEvents: true,
+            },
+        });
+
+        console.log(`\nTx ${previousTransaction} - Events:`, txBlock.events);
+
+        // Find the previous version from transaction inputs or gas payment
+        const txData = txBlock.transaction?.data as any;
+        const inputs = [...(txData?.transaction?.inputs ?? []), ...(txData?.gasData?.payment ?? [])];
+        const previousVersion = inputs.find((i: any) => i.objectId === objectId)?.version;
+
+        if (!previousVersion) {
+            console.log(`\nObject was created in tx: ${previousTransaction}`);
+            break;
+        }
+
+        const previousObject = await client.tryGetPastObject({
+            id: objectId,
+            version: parseInt(previousVersion),
+            options: { showContent: true, showPreviousTransaction: true },
+        });
+
+        console.log(`\nVersion ${previousVersion}:`);
+        console.log(previousObject);
+
+        allVersions.push(previousObject);
+        previousTransaction = (previousObject as any).details?.previousTransaction;
+    }
+
+    console.log(`\nTotal versions found: ${allVersions.length}`);
 })();
