@@ -22,7 +22,7 @@
         "@iota/iota-sdk": "^1.7.1",
         "@iota/ledgerjs-hw-app-iota": "^0.2.2",
         "@ledgerhq/hw-transport-node-hid": "6.28.2",
-        "axios": "^1.12.0",
+        "axios": "^1.15.0",
         "bech32": "^2.0.0",
         "ed25519": "link:@iota/iota-sdk/keypairs/ed25519",
         "graphql-ws": "^5.16.2",
