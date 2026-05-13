@@ -2,7 +2,7 @@ import { IotaClient } from '@iota/iota-sdk/client';
 
 (async () => {
     const client = new IotaClient({
-        url: 'https://indexer.testnet.iota.cafe',
+        url: 'https://indexer.devnet.iota.cafe',
     });
     const objectId = '0xb42b9db5e3363ea80767891458406377ff212b8b4ce1aea5ad396df52250ada1';
     const object = await client.getObject({

@@ -1,7 +1,7 @@
 import { IotaClient } from '@iota/iota-sdk/client';
 
 const client = new IotaClient({
-    url: 'https://indexer.testnet.iota.cafe',
+    url: 'https://indexer.devnet.iota.cafe',
 });
 
 let cursor;

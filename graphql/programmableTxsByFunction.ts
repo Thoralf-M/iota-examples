@@ -6,7 +6,7 @@ import { graphql } from '@iota/iota-sdk/graphql/schemas/2025.2';
 
 (async () => {
   const gqlClient = new IotaGraphQLClient({
-    url: 'https://graphql.testnet.iota.cafe',
+    url: 'https://graphql.devnet.iota.cafe',
   });
   const objectQuery = `{
     transactionBlocks(filter: {afterCheckpoint: 0, function: "0x3::iota_system::request_add_stake"}) {

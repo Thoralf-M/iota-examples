@@ -15,7 +15,7 @@ import path from 'path';
 // }
 // where the syncedSequenceNumber is the first tx of the validator address that called `request_add_validator_candidate`
 
-const graphQLUrl = 'https://graphql.mainnet.iota.cafe';
+const graphQLUrl = 'https://graphql.devnet.iota.cafe';
 
 const validatorPoolIds = [
     '0x75bc87e5433c67ed46646a10c0166d8bb5d458d2a1a313af897cc0c7fe3f955a',

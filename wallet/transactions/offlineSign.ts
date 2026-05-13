@@ -8,7 +8,7 @@ import { bcs } from '@iota/iota-sdk/bcs';
 import { toBase64, fromBase64 } from '@iota/bcs';
 
 const client = new IotaClient({
-    url: 'https://api.testnet.iota.cafe',
+    url: 'https://api.devnet.iota.cafe',
 });
 
 (async () => {

@@ -4,14 +4,14 @@ import { requestIotaFromFaucetV0 } from '@iota/iota-sdk/faucet';
 (async () => {
     // Request funds from faucet so we have some data
     // const faucetResponse = await requestIotaFromFaucetV0({
-    //     host: 'https://faucet.iota-rebased-alphanet.iota.cafe/gas',
+    //     host: 'https://faucet.devnet.iota.cafe/gas',
     //     recipient: '0x111111111504e9350e635d65cd38ccd2c029434c6a3a480d8947a9ba6a15b215',
     // });
     // console.log(faucetResponse)
     // await new Promise(r => setTimeout(r, 2000));
 
     const client = new IotaClient({
-        url: 'https://api.testnet.iota.cafe',
+        url: 'https://api.devnet.iota.cafe',
     });
 
     // Called in cronjob, then starting from latest known checkpoint until this one

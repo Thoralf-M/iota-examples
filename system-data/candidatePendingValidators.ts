@@ -1,7 +1,7 @@
 import { IotaClient } from '@iota/iota-sdk/client';
 
 const client = new IotaClient({
-    url: 'https://api.testnet.iota.cafe',
+    url: 'https://api.devnet.iota.cafe',
     // url: 'http://127.0.0.1:9000',
 });
 
@@ -16,6 +16,7 @@ const client = new IotaClient({
         const validatorWrapper = await client.getDynamicFieldObject({
             parentObjectId: validatorCandidatesId,
             name: candidateValidator.name,
+            options: { showContent: true },
         });
         const validatorV1 = await client.getDynamicFields({
             // @ts-ignore

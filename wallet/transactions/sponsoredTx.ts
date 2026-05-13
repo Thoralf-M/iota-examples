@@ -7,8 +7,8 @@ import { Transaction } from '@iota/iota-sdk/transactions';
 const testMnemonic =
     'remove vessel lens oak junk view cancel say fatal hotel swamp cool true mean basic year shoe chat obey ozone hand blade toe good';
 
-const faucetUrl = 'https://faucet.testnet.iota.cafe';
-const nodeUrl = 'https://api.testnet.iota.cafe';
+const faucetUrl = 'https://faucet.devnet.iota.cafe';
+const nodeUrl = 'https://api.devnet.iota.cafe';
 const explorerTxBlockUrl = 'https://explorer.rebased.iota.org/txblock/';
 const senderKeypair = Ed25519Keypair.deriveKeypair(testMnemonic, `m/44'/4218'/0'/0'/1'`);
 const senderAddress = senderKeypair.getPublicKey().toIotaAddress();
