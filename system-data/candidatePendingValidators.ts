@@ -14,7 +14,7 @@ const client = new IotaClient({
     const candidateValidators = await client.getDynamicFields({ parentId: validatorCandidatesId });
     for (const candidateValidator of candidateValidators.data) {
         const validatorWrapper = await client.getDynamicFieldObject({
-            parentId: validatorCandidatesId,
+            parentObjectId: validatorCandidatesId,
             name: candidateValidator.name,
         });
         const validatorV1 = await client.getDynamicFields({

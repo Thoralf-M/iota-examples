@@ -16,7 +16,7 @@ import { graphql } from '@iota/iota-sdk/graphql/schemas/2025.2';
 
     let domain = '321.iota';
     let object_response = await client.getDynamicFieldObject({
-        parentId: IOTA_NAMES_REGISTRY_ID,
+        parentObjectId: IOTA_NAMES_REGISTRY_ID,
         name: {
             type: `${IOTA_NAMES_PACKAGE_ID}::domain::Domain`,
             value: domain.split('.').reverse(),

@@ -1,4 +1,4 @@
-import { toB64 } from '@iota/bcs';
+import { toBase64 } from '@iota/bcs';
 import { IotaClient } from '@iota/iota-sdk/client';
 
 const client = new IotaClient({
@@ -22,5 +22,5 @@ const client = new IotaClient({
     });
     console.log(txBlock);
     // @ts-ignore
-    console.log(toB64(txBlock.rawEffects));
+    console.log(toBase64(txBlock.rawEffects));
 })();

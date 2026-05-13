@@ -1,4 +1,4 @@
-import { fromB64 } from '@iota/bcs';
+import { fromBase64 } from '@iota/bcs';
 import { IotaClient, IotaObjectRef } from '@iota/iota-sdk/client';
 import { requestIotaFromFaucetV1 } from '@iota/iota-sdk/faucet';
 import { Ed25519Keypair } from '@iota/iota-sdk/keypairs/ed25519';
@@ -57,7 +57,7 @@ console.log('senderAddress: ' + senderAddress);
 
     const { signature, bytes } = await sponsorTransaction(client, senderAddress, kindBytes);
 
-    const senderSignature = (await senderKeypair.signTransaction(fromB64(bytes))).signature;
+    const senderSignature = (await senderKeypair.signTransaction(fromBase64(bytes))).signature;
 
     const txResponse = await client.executeTransactionBlock({
         transactionBlock: bytes,
