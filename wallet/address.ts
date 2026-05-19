@@ -1,6 +1,6 @@
-import { fromHex } from '@iota/iota-sdk/utils';
 import { decodeIotaPrivateKey } from '@iota/iota-sdk/cryptography';
 import { Ed25519Keypair } from '@iota/iota-sdk/keypairs/ed25519';
+import { fromHex } from '@iota/iota-sdk/utils';
 
 const testMnemonic =
     'remove vessel lens oak junk view cancel say fatal hotel swamp cool true mean basic year shoe chat obey ozone hand blade toe good';

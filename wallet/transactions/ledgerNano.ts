@@ -1,8 +1,8 @@
-import { toHex } from '@iota/iota-sdk/utils';
 import { IotaClient } from '@iota/iota-sdk/client';
 import { messageWithIntent, toSerializedSignature } from '@iota/iota-sdk/cryptography';
 import { Ed25519PublicKey } from '@iota/iota-sdk/keypairs/ed25519';
 import { Transaction } from '@iota/iota-sdk/transactions';
+import { toHex } from '@iota/iota-sdk/utils';
 import IotaLedgerClient from '@iota/ledgerjs-hw-app-iota';
 import TransportNodeHid from '@ledgerhq/hw-transport-node-hid';
 

@@ -40,10 +40,10 @@ function extractName(txBlock: any): string | null {
             cursor,
             filter: {
                 MoveFunction: {
-                    function: "place_bid",
-                    module: "auction",
-                    package: "0x6f727ea576a00036657fff0ae3a6d7c8171b178bf35112d6b83b2a6272cc5f0d",
-                }
+                    function: 'place_bid',
+                    module: 'auction',
+                    package: '0x6f727ea576a00036657fff0ae3a6d7c8171b178bf35112d6b83b2a6272cc5f0d',
+                },
             },
             options: {
                 showEffects: false,
@@ -52,9 +52,7 @@ function extractName(txBlock: any): string | null {
             },
         });
         for (const txBlock of txBlocksPage.data) {
-            if (
-                txBlock.transaction != null
-            ) {
+            if (txBlock.transaction != null) {
                 // Cleanup output
                 try {
                     // @ts-ignore
@@ -69,7 +67,7 @@ function extractName(txBlock: any): string | null {
                     delete txBlock.transaction.data.sender;
                     // @ts-ignore
                     delete txBlock.transaction.txSignatures;
-                } catch (error) { }
+                } catch (error) {}
 
                 // Extract and count the name
                 const digest = txBlock?.digest;
@@ -80,7 +78,10 @@ function extractName(txBlock: any): string | null {
                         nameCounts[name] = (nameCounts[name] || 0) + 1;
                     } else {
                         // Print the txBlock for debugging if name extraction fails
-                        console.log('No name extracted for txBlock:', JSON.stringify(txBlock, null, 2));
+                        console.log(
+                            'No name extracted for txBlock:',
+                            JSON.stringify(txBlock, null, 2),
+                        );
                     }
                 }
 
@@ -110,7 +111,7 @@ function extractName(txBlock: any): string | null {
     // Print the summary, right-aligned
     const entries = Object.entries(nameCounts);
     if (entries.length === 0) {
-        console.log("No names found.");
+        console.log('No names found.');
         return;
     }
     // Find max lengths for alignment
@@ -120,9 +121,7 @@ function extractName(txBlock: any): string | null {
     entries.sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
     for (const [name, count] of entries) {
         console.log(
-            name.padStart(maxNameLen, ' ') +
-            '  ' +
-            count.toString().padStart(maxCountLen, ' ')
+            name.padStart(maxNameLen, ' ') + '  ' + count.toString().padStart(maxCountLen, ' '),
         );
     }
 })();

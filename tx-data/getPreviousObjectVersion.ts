@@ -30,7 +30,10 @@ import { IotaClient } from '@iota/iota-sdk/client';
 
         // Find the previous version from transaction inputs or gas payment
         const txData = txBlock.transaction?.data as any;
-        const inputs = [...(txData?.transaction?.inputs ?? []), ...(txData?.gasData?.payment ?? [])];
+        const inputs = [
+            ...(txData?.transaction?.inputs ?? []),
+            ...(txData?.gasData?.payment ?? []),
+        ];
         const previousVersion = inputs.find((i: any) => i.objectId === objectId)?.version;
 
         if (!previousVersion) {

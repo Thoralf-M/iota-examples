@@ -12,7 +12,7 @@ let txsToFind = 5000;
             cursor,
             filter: {
                 // Currently only supported by the indexer
-                TransactionKind: 'ProgrammableTransaction'
+                TransactionKind: 'ProgrammableTransaction',
             },
             options: {
                 showEffects: false,
@@ -21,9 +21,7 @@ let txsToFind = 5000;
             },
         });
         for (const txBlock of txBlocksPage.data) {
-            if (
-                txBlock.transaction != null
-            ) {
+            if (txBlock.transaction != null) {
                 // Cleanup output
                 try {
                     // @ts-ignore
@@ -38,7 +36,7 @@ let txsToFind = 5000;
                     delete txBlock.transaction.data.sender;
                     // @ts-ignore
                     delete txBlock.transaction.txSignatures;
-                } catch (error) { }
+                } catch (error) {}
 
                 console.log(
                     JSON.stringify(

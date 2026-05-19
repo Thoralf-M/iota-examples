@@ -6,11 +6,9 @@ const client = new IotaClient({
 
 (async () => {
     const object = await client.view({
-        functionName: "0x2::clock::timestamp_ms",
+        functionName: '0x2::clock::timestamp_ms',
         typeArgs: [],
-        arguments: [
-            "0x6"
-        ]
+        arguments: ['0x6'],
     });
     console.log(JSON.stringify(object, null, 2));
 })();

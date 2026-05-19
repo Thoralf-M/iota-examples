@@ -3,3 +3,4 @@ cli-commands/
 curl/
 rust/
 dist/
+pnpm-lock.yaml
