@@ -5,7 +5,7 @@ import { writeFileSync } from 'fs';
 import { IotaClient, IotaObjectRef } from '@iota/iota-sdk/client';
 import { Ed25519Keypair } from '@iota/iota-sdk/keypairs/ed25519';
 import { Transaction } from '@iota/iota-sdk/transactions';
-import { fromB64 } from '@iota/iota-sdk/utils';
+import { fromBase64 } from '@iota/iota-sdk/utils';
 
 import { explorerTxBlockUrl, nodeUrl, testMnemonic } from './consts';
 import { getKeysAndAddresses } from './keys';
@@ -190,7 +190,7 @@ async function sponsorTx(
         kindBytes,
     );
 
-    const senderSignature = (await senderKeypair.signTransaction(fromB64(bytes))).signature;
+    const senderSignature = (await senderKeypair.signTransaction(fromBase64(bytes))).signature;
 
     const txResponse = await client.executeTransactionBlock({
         transactionBlock: bytes,

@@ -5,6 +5,7 @@
         "sourceMap": true,
         "strict": true,
         "moduleResolution": "node",
+        "ignoreDeprecations": "6.0",
         "types": ["node"],
         "esModuleInterop": true,
         "noImplicitAny": true,

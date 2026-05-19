@@ -1,14 +1,14 @@
 import { IotaClient } from '@iota/iota-sdk/client';
 
 const client = new IotaClient({
-    // url: 'https://api.iota-rebased-alphanet.iota.cafe',
+    // url: 'https://api.devnet.iota.cafe',
     url: 'https://api.devnet.iota.cafe',
     // url: 'http://127.0.0.1:9000',
 });
 
 (async () => {
     const object = await client.getObject({
-        id: '0x85f493ba298b68af3e4812385460e21ddc5aa61273efd9dc54aa6919848090e4',
+        id: '0xc9404b0ad47fc2cdcb429d4eb2b8b62b1b75b278efaa341ea44617d0203e0f00',
         options: {
             showBcs: true,
             showDisplay: true,

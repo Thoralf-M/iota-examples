@@ -1,9 +1,8 @@
 import { IotaClient } from '@iota/iota-sdk/client';
 
 const client = new IotaClient({
-    url: 'http://localhost:9000',
-    // url: 'https://api.iota-rebased-alphanet.iota.cafe',
-    // url: 'https://api-direct.iota-rebased-alphanet.iota.cafe',
+    url: 'https://api.devnet.iota.cafe',
+    // url: 'http://localhost:9000',
 });
 
 (async () => {

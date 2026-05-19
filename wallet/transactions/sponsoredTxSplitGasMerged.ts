@@ -1,9 +1,8 @@
+import { fromBase64 } from '@iota/bcs';
 import { IotaClient, IotaObjectRef } from '@iota/iota-sdk/client';
 import { requestIotaFromFaucetV0 } from '@iota/iota-sdk/faucet';
 import { Ed25519Keypair } from '@iota/iota-sdk/keypairs/ed25519';
 import { Transaction } from '@iota/iota-sdk/transactions';
-
-import { fromB64 } from '../../../iota/sdk/bcs/dist/cjs';
 
 const testMnemonic =
     'remove vessel lens oak junk view cancel say fatal hotel swamp cool true mean basic year shoe chat obey ozone hand blade toe good';
@@ -15,7 +14,7 @@ console.log('senderAddress: ' + senderAddress);
 (async () => {
     /// Request funds from faucet if needed
     const client = new IotaClient({
-        url: 'https://api.testnet.iota.cafe',
+        url: 'https://api.devnet.iota.cafe',
     });
     await requestFundsIfNeeded(client, senderAddress);
 
@@ -53,7 +52,7 @@ console.log('senderAddress: ' + senderAddress);
 
     const { signature, bytes } = await sponsorTransaction(client, senderAddress, kindBytes);
 
-    const senderSignature = (await senderKeypair.signTransaction(fromB64(bytes))).signature;
+    const senderSignature = (await senderKeypair.signTransaction(fromBase64(bytes))).signature;
 
     const txResponse = await client.executeTransactionBlock({
         transactionBlock: bytes,
@@ -103,7 +102,7 @@ async function requestFundsIfNeeded(client: IotaClient, address: string) {
     });
     if (parseInt(coinBalance.totalBalance) < 2_500_000_000) {
         const faucetResponse = await requestIotaFromFaucetV0({
-            host: 'https://faucet.iota-rebased-alphanet.iota.cafe/gas',
+            host: 'https://faucet.devnet.iota.cafe/gas',
             recipient: address,
         });
         console.log(faucetResponse);

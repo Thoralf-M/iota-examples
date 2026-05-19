@@ -3,7 +3,7 @@ import { Ed25519Keypair } from '@iota/iota-sdk/keypairs/ed25519';
 import { Transaction } from '@iota/iota-sdk/transactions';
 
 const client = new IotaClient({
-    url: 'https://api.testnet.iota.cafe',
+    url: 'https://api.devnet.iota.cafe',
     // url: 'https://api.hackanet.iota.cafe',
     // url: 'http://127.0.0.1:9000',
 });

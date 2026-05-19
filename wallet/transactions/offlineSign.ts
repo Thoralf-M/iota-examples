@@ -1,14 +1,14 @@
 // https://docs.iota.org/developer/iota-101/transactions/ptb/building-programmable-transaction-blocks-ts-sdk#building-offline
 
+import { fromBase64, toBase64 } from '@iota/bcs';
+import { bcs } from '@iota/iota-sdk/bcs';
 import { IotaClient } from '@iota/iota-sdk/client';
 import { decodeIotaPrivateKey } from '@iota/iota-sdk/cryptography';
 import { Ed25519Keypair } from '@iota/iota-sdk/keypairs/ed25519';
 import { Transaction } from '@iota/iota-sdk/transactions';
-import { bcs } from '@iota/iota-sdk/bcs';
-import { toBase64, fromBase64 } from '@iota/bcs';
 
 const client = new IotaClient({
-    url: 'https://api.testnet.iota.cafe',
+    url: 'https://api.devnet.iota.cafe',
 });
 
 (async () => {
@@ -86,5 +86,3 @@ const client = new IotaClient({
     console.log('Decoded txSignatures count:', decodedData.txSignatures.length);
     console.log('Decoded sender:', decodedData.intentMessage.value.V1.sender);
 })();
-
-

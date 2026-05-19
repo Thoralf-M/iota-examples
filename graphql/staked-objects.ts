@@ -3,7 +3,7 @@
 import { GraphQLQueryOptions, GraphQLQueryResult, IotaGraphQLClient } from '@iota/iota-sdk/graphql';
 import { graphql } from '@iota/iota-sdk/graphql/schemas/2025.2';
 
-const STAKED_IOTA_TYPE = "0x3::staking_pool::StakedIota";
+const STAKED_IOTA_TYPE = '0x3::staking_pool::StakedIota';
 // const TIMELOCKED_STAKED_IOTA_TYPE = "0x3::timelocked_staking::TimelockedStakedIota";
 
 (async () => {
@@ -39,17 +39,13 @@ const STAKED_IOTA_TYPE = "0x3::staking_pool::StakedIota";
             }
         }`;
 
-        let result: GraphQLQueryResult = await queryGraphQl(
-            gqlClient,
-            query,
-            {
-                type: STAKED_IOTA_TYPE,
-                cursor: cursorSection
-            },
-        );
+        let result: GraphQLQueryResult = await queryGraphQl(gqlClient, query, {
+            type: STAKED_IOTA_TYPE,
+            cursor: cursorSection,
+        });
 
         if (result.errors) {
-            throw new Error("GraphQL query failed: " + JSON.stringify(result.errors));
+            throw new Error('GraphQL query failed: ' + JSON.stringify(result.errors));
             break;
         }
 
@@ -58,18 +54,18 @@ const STAKED_IOTA_TYPE = "0x3::staking_pool::StakedIota";
             res.stakeObjects++;
             console.log(JSON.stringify(node, null, 2));
             if (node.owner && node.owner.owner) {
-                res.addresses.add(node.owner.owner.address)
+                res.addresses.add(node.owner.owner.address);
             } else {
-                console.warn("No owner found for node: ", node);
+                console.warn('No owner found for node: ', node);
             }
         }
 
-        console.log(res.addresses.size, " addresses, ", res.stakeObjects, " stake objects");
+        console.log(res.addresses.size, ' addresses, ', res.stakeObjects, ' stake objects');
         // @ts-ignore
         if (result.data.objects.pageInfo.hasNextPage) {
             // @ts-ignore
             cursorSection = result.data.objects.pageInfo.endCursor;
-            console.log("next cursor:" + cursorSection);
+            console.log('next cursor:' + cursorSection);
         } else {
             break;
         }

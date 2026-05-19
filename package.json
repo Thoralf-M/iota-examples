@@ -11,21 +11,22 @@
     "keywords": [],
     "author": "",
     "license": "ISC",
+    "packageManager": "pnpm@10.33.0",
     "devDependencies": {
-        "@ianvs/prettier-plugin-sort-imports": "^4.6.2",
-        "@types/node": "^22.17.2",
+        "@ianvs/prettier-plugin-sort-imports": "^4.7.1",
+        "@types/node": "^22.19.19",
         "@types/ws": "^8.18.1",
-        "prettier": "^3.6.2"
+        "prettier": "^3.8.3"
     },
     "dependencies": {
-        "@iota/bcs": "^1.2.0",
-        "@iota/iota-sdk": "^1.7.1",
-        "@iota/ledgerjs-hw-app-iota": "^0.2.2",
-        "@ledgerhq/hw-transport-node-hid": "6.28.2",
-        "axios": "^1.15.0",
+        "@iota/bcs": "^1.6.0",
+        "@iota/iota-sdk": "^1.13.0",
+        "@iota/ledgerjs-hw-app-iota": "^0.6.2",
+        "@ledgerhq/hw-transport-node-hid": "^6.33.2",
+        "axios": "^1.16.0",
         "bech32": "^2.0.0",
         "ed25519": "link:@iota/iota-sdk/keypairs/ed25519",
-        "graphql-ws": "^5.16.2",
-        "ws": "^8.18.3"
+        "graphql-ws": "^6.0.8",
+        "ws": "^8.20.1"
     }
 }

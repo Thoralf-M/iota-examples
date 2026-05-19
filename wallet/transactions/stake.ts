@@ -3,7 +3,7 @@ import { Ed25519Keypair } from '@iota/iota-sdk/keypairs/ed25519';
 import { Transaction } from '@iota/iota-sdk/transactions';
 
 const client = new IotaClient({
-    url: 'https://api.testnet.iota.cafe',
+    url: 'https://api.devnet.iota.cafe',
 });
 
 const testMnemonic =
@@ -21,7 +21,7 @@ txb.moveCall({
     arguments: [
         txb.object('0x0000000000000000000000000000000000000000000000000000000000000005'),
         txb.splitCoins(txb.gas, [txb.pure.u64(stakeAmount)])[0],
-        txb.pure.address('0x111111111504e9350e635d65cd38ccd2c029434c6a3a480d8947a9ba6a15b215'),
+        txb.pure.address('0x6f0202b12cd398166bdd3716c9aa3f0b6218ba125491f7ea2bc660fdd5e57ff8'),
     ],
 });
 

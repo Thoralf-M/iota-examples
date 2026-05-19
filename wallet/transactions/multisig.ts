@@ -37,7 +37,7 @@ console.log('multisigAddress: ' + multisigAddress);
 
 (async () => {
     const client = new IotaClient({
-        url: 'https://api.testnet.iota.cafe',
+        url: 'https://api.devnet.iota.cafe',
     });
 
     await requestFundsIfNeeded(client, multisigAddress);
@@ -94,7 +94,7 @@ async function requestFundsIfNeeded(client: IotaClient, address: string) {
     });
     if (parseInt(coinBalance.totalBalance) < 2_500_000_000) {
         const faucetResponse = await requestIotaFromFaucetV0({
-            host: 'https://faucet.iota-rebased-alphanet.iota.cafe/gas',
+            host: 'https://faucet.devnet.iota.cafe/gas',
             recipient: address,
         });
         console.log(faucetResponse);

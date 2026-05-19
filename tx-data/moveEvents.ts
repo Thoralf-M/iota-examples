@@ -1,7 +1,7 @@
 import { IotaClient } from '@iota/iota-sdk/client';
 
 const client = new IotaClient({
-    url: 'https://api.testnet.iota.cafe',
+    url: 'https://api.devnet.iota.cafe',
 });
 
 async function queryEvents() {

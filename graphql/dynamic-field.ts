@@ -6,7 +6,7 @@ import { graphql } from '@iota/iota-sdk/graphql/schemas/2025.2';
 
 (async () => {
     const gqlClient = new IotaGraphQLClient({
-        url: 'https://graphql.testnet.iota.cafe',
+        url: 'https://graphql.devnet.iota.cafe',
     });
 
     const objectId = '0x7c98da4057f4cc17e52acdd3ec49c4fee25692f4d61aad29a9348d1c46fa67db';

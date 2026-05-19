@@ -1,11 +1,11 @@
+import fs from 'fs';
+import path from 'path';
 import {
     IotaGraphQLClient,
     type GraphQLQueryOptions,
     type GraphQLQueryResult,
 } from '@iota/iota-sdk/graphql';
 import { graphql } from '@iota/iota-sdk/graphql/schemas/2025.2';
-import fs from 'fs';
-import path from 'path';
 
 // Script to fetch staking txs related to a given validator pool
 // To skip syncing unrelated txs, create a cache file stake-txs.json with the following structure:
@@ -15,17 +15,17 @@ import path from 'path';
 // }
 // where the syncedSequenceNumber is the first tx of the validator address that called `request_add_validator_candidate`
 
-const graphQLUrl = 'https://graphql.mainnet.iota.cafe';
+const graphQLUrl = 'https://graphql.devnet.iota.cafe';
 
 const validatorPoolIds = [
     '0x75bc87e5433c67ed46646a10c0166d8bb5d458d2a1a313af897cc0c7fe3f955a',
     // Add more pool IDs here
 ];
-const MAX_BATCH_SIZE = 1
+const MAX_BATCH_SIZE = 1;
 const maxTransactions = undefined;
 const inputObject = '0x5';
 // const inputObject = undefined;
-const functionFilter = undefined // '0x3::iota_system::request_add_stake';
+const functionFilter = undefined; // '0x3::iota_system::request_add_stake';
 
 const stakeTypes = [
     '0x0000000000000000000000000000000000000000000000000000000000000003::staking_pool::StakedIota',
@@ -54,7 +54,7 @@ function saveStakeTxsCache(cache: StakeTxsCache) {
 }
 
 export class GraphQLDataFetcher {
-    constructor() { }
+    constructor() {}
 
     async getLatestCheckpointSequence(): Promise<number> {
         const query = `
@@ -84,7 +84,6 @@ export class GraphQLDataFetcher {
         }).query(options);
     }
 
-
     async fetchTransactionBatch(
         checkpointRange: CheckpointRange,
         batchSize: number = MAX_BATCH_SIZE,
@@ -95,9 +94,7 @@ export class GraphQLDataFetcher {
         const cursorSection = cursor ? `, after: "${cursor}"` : '';
 
         // Build filter object dynamically
-        const filterParts = [
-            `afterCheckpoint: ${checkpointRange.first}`,
-        ];
+        const filterParts = [`afterCheckpoint: ${checkpointRange.first}`];
 
         if (inputObject && inputObject.trim()) {
             filterParts.push(`inputObject: "${inputObject.trim()}"`);
@@ -193,7 +190,7 @@ export class GraphQLDataFetcher {
         };
     }
 
-    async * fetchTransactionBlocks(
+    async *fetchTransactionBlocks(
         checkpointRange: CheckpointRange,
         maxTransactions?: number,
         inputObject?: string,
@@ -209,7 +206,9 @@ export class GraphQLDataFetcher {
         let totalFetched = 0;
 
         while (hasNextPage && (!maxTransactions || totalFetched < maxTransactions)) {
-            const remainingToFetch = maxTransactions ? maxTransactions - totalFetched : MAX_BATCH_SIZE;
+            const remainingToFetch = maxTransactions
+                ? maxTransactions - totalFetched
+                : MAX_BATCH_SIZE;
             const batchSize = Math.min(MAX_BATCH_SIZE, remainingToFetch);
 
             const batchResult = await this.fetchTransactionBatch(
@@ -245,7 +244,6 @@ export class GraphQLDataFetcher {
             }
         }
     }
-
 }
 
 export interface CheckpointRange {
@@ -261,7 +259,7 @@ export interface RawTransactionBlock {
     effects?: {
         epoch?: {
             epochId: number;
-        }
+        };
         checkpoint?: {
             sequenceNumber: number;
             timestamp: string;
@@ -278,7 +276,6 @@ export interface TransactionBatchResult {
     endCursor: string | null;
 }
 
-
 async function main() {
     let stakeTxsCache = loadStakeTxsCache();
     let checkpointRange: CheckpointRange = {
@@ -288,7 +285,9 @@ async function main() {
     let fetcher = new GraphQLDataFetcher();
     const latestCheckpoint = await fetcher.getLatestCheckpointSequence();
     checkpointRange.last = latestCheckpoint;
-    console.log(`Fetching transactions for pools ${validatorPoolIds.join(', ')} from checkpoint ${checkpointRange.first} to ${checkpointRange.last} (synced ${(checkpointRange.first / latestCheckpoint * 100).toFixed(2)}%)`);
+    console.log(
+        `Fetching transactions for pools ${validatorPoolIds.join(', ')} from checkpoint ${checkpointRange.first} to ${checkpointRange.last} (synced ${((checkpointRange.first / latestCheckpoint) * 100).toFixed(2)}%)`,
+    );
     for await (const fetchResult of fetcher.fetchTransactionBlocks(
         checkpointRange,
         maxTransactions,
@@ -296,26 +295,39 @@ async function main() {
         functionFilter,
     )) {
         const sequenceNumbers = fetchResult.transactions
-            .map(tx => tx.effects?.checkpoint?.sequenceNumber)
+            .map((tx) => tx.effects?.checkpoint?.sequenceNumber)
             .filter((seq): seq is number => typeof seq === 'number');
         const highestSeq = sequenceNumbers.length > 0 ? Math.max(...sequenceNumbers) : 0;
         if (fetchResult.transactions) {
             for (const tx of fetchResult.transactions) {
-                if (tx.effects && tx.effects.objectChanges && Array.isArray(tx.effects.objectChanges.nodes)) {
-                    tx.effects.objectChanges.nodes = tx.effects.objectChanges.nodes.filter((objChange: any) => {
-                        const inputJson = objChange.inputState?.asMoveObject?.contents?.json;
-                        const outputJson = objChange.outputState?.asMoveObject?.contents?.json;
-                        const inputType = objChange.inputState?.asMoveObject?.contents?.type?.repr;
-                        const outputType = objChange.outputState?.asMoveObject?.contents?.type?.repr;
-                        const typeMatch = stakeTypes.includes(inputType) || stakeTypes.includes(outputType);
-                        const inputPoolId = inputJson?.pool_id || inputJson?.staked_iota?.pool_id;
-                        const outputPoolId = outputJson?.pool_id || outputJson?.staked_iota?.pool_id;
-                        const poolMatch = validatorPoolIds.includes(inputPoolId) || validatorPoolIds.includes(outputPoolId);
-                        return typeMatch && poolMatch;
-                    });
+                if (
+                    tx.effects &&
+                    tx.effects.objectChanges &&
+                    Array.isArray(tx.effects.objectChanges.nodes)
+                ) {
+                    tx.effects.objectChanges.nodes = tx.effects.objectChanges.nodes.filter(
+                        (objChange: any) => {
+                            const inputJson = objChange.inputState?.asMoveObject?.contents?.json;
+                            const outputJson = objChange.outputState?.asMoveObject?.contents?.json;
+                            const inputType =
+                                objChange.inputState?.asMoveObject?.contents?.type?.repr;
+                            const outputType =
+                                objChange.outputState?.asMoveObject?.contents?.type?.repr;
+                            const typeMatch =
+                                stakeTypes.includes(inputType) || stakeTypes.includes(outputType);
+                            const inputPoolId =
+                                inputJson?.pool_id || inputJson?.staked_iota?.pool_id;
+                            const outputPoolId =
+                                outputJson?.pool_id || outputJson?.staked_iota?.pool_id;
+                            const poolMatch =
+                                validatorPoolIds.includes(inputPoolId) ||
+                                validatorPoolIds.includes(outputPoolId);
+                            return typeMatch && poolMatch;
+                        },
+                    );
                 }
             }
-            fetchResult.transactions = fetchResult.transactions.filter(tx => {
+            fetchResult.transactions = fetchResult.transactions.filter((tx) => {
                 const nodes = tx.effects?.objectChanges?.nodes;
                 return Array.isArray(nodes) && nodes.length > 0;
             });
@@ -324,12 +336,16 @@ async function main() {
         if (highestSeq !== undefined) {
             stakeTxsCache.syncedSequenceNumber = highestSeq;
         }
-        console.log(`Found ${fetchResult.transactions.length} transactions, synced ${highestSeq}/${latestCheckpoint} ${(highestSeq / latestCheckpoint * 100).toFixed(2)}%`);
+        console.log(
+            `Found ${fetchResult.transactions.length} transactions, synced ${highestSeq}/${latestCheckpoint} ${((highestSeq / latestCheckpoint) * 100).toFixed(2)}%`,
+        );
         if (fetchResult.isComplete) {
-            console.log(`Synced all txs up to checkpoint ${checkpointRange.last} for pools ${validatorPoolIds.join(', ')}`);
+            console.log(
+                `Synced all txs up to checkpoint ${checkpointRange.last} for pools ${validatorPoolIds.join(', ')}`,
+            );
         }
         saveStakeTxsCache(stakeTxsCache);
     }
 }
 
-main()
+main();

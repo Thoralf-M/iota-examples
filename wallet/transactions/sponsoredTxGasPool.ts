@@ -1,4 +1,4 @@
-import { toB64 } from '@iota/bcs';
+import { toBase64 } from '@iota/bcs';
 import { IotaClient, IotaObjectRef, TransactionEffects } from '@iota/iota-sdk/client';
 import { requestIotaFromFaucetV0 } from '@iota/iota-sdk/faucet';
 import { Ed25519Keypair } from '@iota/iota-sdk/keypairs/ed25519';
@@ -108,7 +108,7 @@ async function sponsorSignAndSubmit(
 ): Promise<TransactionEffects> {
     const data = {
         reservation_id: reservationId,
-        tx_bytes: toB64(transaction),
+        tx_bytes: toBase64(transaction),
         user_sig: senderSignature,
     };
     // Let gas pool sign and submit

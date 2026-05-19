@@ -1,15 +1,15 @@
-import { toB64 } from '@iota/bcs';
+import { toBase64 } from '@iota/bcs';
 import { IotaClient } from '@iota/iota-sdk/client';
 
 const client = new IotaClient({
-    url: 'https://api.testnet.iota.cafe',
+    url: 'https://api.devnet.iota.cafe',
     // url: 'https://api.hackanet.iota.cafe',
     // url: 'http://127.0.0.1:9000',
 });
 
 (async () => {
     const txBlock = await client.getTransactionBlock({
-        digest: '6uo67WYPZWMGc5PqSntxrU7LZSwpxBH5hVn8HWdw7jqK',
+        digest: 'AHBQTeoHykZwcEDUVTF7UizEHXU8SBmMcGPZMy8NQsxv',
         options: {
             // showObjectChanges: true,
             showRawEffects: true,
@@ -22,5 +22,5 @@ const client = new IotaClient({
     });
     console.log(txBlock);
     // @ts-ignore
-    console.log(toB64(txBlock.rawEffects));
+    console.log(toBase64(txBlock.rawEffects));
 })();
