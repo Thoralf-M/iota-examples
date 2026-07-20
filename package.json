@@ -16,7 +16,8 @@
         "@ianvs/prettier-plugin-sort-imports": "^4.7.1",
         "@types/node": "^22.19.19",
         "@types/ws": "^8.18.1",
-        "prettier": "^3.8.3"
+        "prettier": "^3.8.3",
+        "typescript": "^7.0.2"
     },
     "dependencies": {
         "@iota/bcs": "^1.6.0",
