@@ -1,0 +1,7 @@
+[package]
+name = "view_demo"
+version = "0.0.1"
+edition = "2024"
+
+[addresses]
+view_demo = "0x0"
