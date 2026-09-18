@@ -7,8 +7,8 @@ docker run -d --name postgres \
  postgres:15 \
  -c max_connections=1000
  
-cargo run --features=indexer start --force-regenesis --with-faucet --with-indexer
-iota start --force-regenesis --with-faucet --with-indexer
+cargo run -p iota-localnet --features=indexer start --force-regenesis --with-faucet --with-indexer
+iota-localnet start --force-regenesis --with-faucet --with-indexer
 
 # Reader and Writer instances are needed
 # Reader
